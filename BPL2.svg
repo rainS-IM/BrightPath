@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+  <foreignObject width="100%" height="100%">
+    <div id="bpl-container" xmlns="http://www.w3.org/1999/xhtml" style="width:100%; height:100%; margin:0; background:#000;">
+      
+      <iframe id="game-loader" src="about:blank" style="position:fixed; top:0; left:0; width:100%; height:100%; border:none; background:#000;"></iframe>
+
+      <script type="text/javascript">
+        // <![CDATA[
+        (async function() {
+          const gameUrl = "https://cdn.jsdelivr.net/gh/rainS-IM/BrightPath@main/BrightPathLearning2.html";
+          const baseUrl = "https://cdn.jsdelivr.net/gh/rainS-IM/BrightPath@main/";
+          const frame = document.getElementById('game-loader');
+
+          try {
+            const response = await fetch(gameUrl);
+            if (!response.ok) throw new Error("Fetch failed");
+            const html = await response.text();
+
+            // Access the iframe's document
+            const fdoc = frame.contentWindow.document;
+
+            // This tells the game to look at jsDelivr for its assets
+            const baseTag = `<base href="${baseUrl}">`;
+            
+            // We 'write' the content. This is better than srcdoc for Safari
+            // as it helps maintain a more stable environment.
+            fdoc.open();
+            fdoc.write(baseTag + html);
+            fdoc.close();
+
+          } catch (err) {
+            console.error("BPL Loader Error:", err);
+            document.getElementById('bpl-container').innerHTML = 
+              `<div style="color:white; font-family:sans-serif; text-align:center; padding-top:20%;">
+                Error: ${err.message}<br/>Check network or link.
+              </div>`;
+          }
+        })();
+        // ]]>
+      </script>
+    </div>
+  </foreignObject>
+</svg>
