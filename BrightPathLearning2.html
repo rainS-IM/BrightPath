@@ -10,34 +10,44 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
     :root {
-        --primary: #3b82f6;
-        --primary-hover: #2563eb;
-        --bg-dark: #0f172a;
-        --bg-card: rgba(30, 41, 59, 0.7);
-        --text-main: #f8fafc;
-        --text-muted: #cbd5e1;
-        --accent: #60a5fa;
-        
-        /* Workspace Theme Variables (Default Cyber) */
-        --v-bg: linear-gradient(135deg, #0d0c1d, #1a0b2e, #0d0c1d);
-        --v-card: #120e2e;
-        --v-text: #00ffcc;
-        --v-muted: #ff007f;
-        --v-accent: #ffff00;
-        --v-btn: #ff007f;
-        --vault-heading: #ffffff;
-        --vault-body: #f8fafc;
-        --vault-muted: #cbd5e1;
+        --primary: #ffd300; /* default accent (255,211,0) */
+        --primary-dark: #b38a00; /* darker yellow-ish */
+        --primary-hover: #ffcf00;
+        --bg: var(--primary);
+        --surface: #ffffff;
+        --surface-tint: rgba(255,211,0,0.06);
+        --bg-card: var(--surface);
+        --text-main: #000000;
+        --text-muted: #6b7280;
+        --text-error: #ef4444;
+        --accent: var(--primary);
+
+        /* Workspace Theme Variables */
+        --v-bg: var(--bg);
+        --v-card: var(--surface);
+        --v-text: var(--text-main);
+        --v-muted: var(--text-muted);
+        --v-accent: var(--primary);
+        --v-btn: var(--primary);
+        --vault-heading: var(--text-main);
+        --vault-body: var(--text-main);
+        --vault-muted: var(--text-muted);
+
+        /* reduced rounding */
+        --radius: 8px;
+        --radius-sm: 6px;
+        --radius-lg: 12px;
+        --radius-xl: 14px;
     }
 
     body {
-        font-family: 'Poppins', sans-serif;
+        font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
         margin: 0;
         min-height: 100vh;
-        background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+        background: var(--bg-gradient, var(--bg));
         color: var(--text-main);
         overflow-x: hidden;
-        transition: background 0.3s;
+        transition: background 0.3s, color 0.2s;
     }
 
     #bg-layer {
@@ -57,10 +67,10 @@
         justify-content: space-between;
         align-items: center;
         padding: 20px 5%;
-        background: rgba(15, 23, 42, 0.8);
+        background: var(--surface);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        border-bottom: 1px solid var(--border);
         position: sticky;
         top: 0;
         z-index: 50;
@@ -75,7 +85,7 @@
         align-items: center;
         gap: 10px;
     }
-    .navbar-brand span { color: var(--primary); }
+    .navbar-brand span { color: var(--text-main); }
 
     .nav-links {
         display: flex;
@@ -99,11 +109,11 @@
 
     .nav-links a:hover,
     .nav-tab:hover {
-        color: #fff;
+        color: var(--text-main);
     }
 
     .nav-tab.active {
-        color: #fff;
+        color: var(--text-main);
     }
 
     .nav-actions {
@@ -111,14 +121,91 @@
         gap: 15px;
     }
 
+    .navbar-search {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--surface-tint);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 8px 12px;
+        flex: 0 1 280px;
+        transition: all 0.3s ease;
+    }
+
+    .navbar-search:focus-within {
+        background: var(--surface);
+        border-color: var(--primary);
+        box-shadow: 0 0 0 2px rgba(255, 211, 0, 0.1);
+    }
+
+    .navbar-search input {
+        border: none;
+        background: transparent;
+        color: var(--text-main);
+        font: inherit;
+        font-size: 0.95em;
+        padding: 0;
+        outline: none;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .navbar-search input::placeholder {
+        color: var(--text-muted);
+    }
+
+    .navbar-search-btn {
+        background: transparent;
+        border: none;
+        color: var(--text-muted);
+        cursor: pointer;
+        padding: 4px 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: color 0.2s ease;
+        font-size: 1.1em;
+        box-shadow: none;
+    }
+
+    .navbar-search-btn:hover {
+        color: var(--text-main);
+        background: transparent;
+        transform: none;
+    }
+
+    @media (max-width: 1024px) {
+        .navbar-search {
+            flex: 0 1 200px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .navbar-search {
+            display: none;
+        }
+    }
+
+    /* Navbar/link color enforcement to ensure theme variables win */
+    .navbar .nav-links a,
+    .navbar .nav-links .nav-tab { color: var(--text-muted) !important; }
+    .navbar .nav-links a:hover,
+    .navbar .nav-links .nav-tab:hover,
+    .navbar .nav-links .nav-tab.active { color: var(--text-main) !important; font-weight:600; }
+
+    /* Ensure subject cards inherit the main text color */
+    .subject-card { color: var(--text-main); }
+    .subject-card * { color: inherit; }
+
     button {
         padding: 12px 24px;
         border: none;
         border-radius: 8px;
         background: var(--primary);
-        color: white;
+        color: var(--text-on-primary, #000000);
         font-weight: 600;
-        font-family: 'Poppins', sans-serif;
+        font-family: inherit;
         cursor: pointer;
         transition: all 0.3s ease;
         box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
@@ -126,34 +213,35 @@
     button:hover {
         background: var(--primary-hover);
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.18);
     }
     .btn-outline {
         background: transparent;
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        border: 1px solid var(--border);
+        color: var(--text-main);
         box-shadow: none;
     }
     .btn-outline:hover {
-        background: rgba(255, 255, 255, 0.1);
+        background: var(--surface-tint);
         box-shadow: none;
     }
 
     .page { max-width: 1200px; margin: 0 auto; padding: 20px 5%; }
     
     .hero { text-align: center; padding: 80px 20px 60px; max-width: 800px; margin: 0 auto; }
-    .hero h1 { font-size: 3.5em; font-weight: 700; line-height: 1.2; margin-bottom: 20px; background: linear-gradient(to right, #ffffff, #93c5fd); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero h1 { font-size: 3.5em; font-weight: 700; line-height: 1.2; margin-bottom: 20px; color: var(--text-main); }
     .hero p { font-size: 1.2em; color: var(--text-muted); margin-bottom: 40px; font-weight: 300; line-height: 1.6; }
     .hero-actions { display: flex; justify-content: center; gap: 20px; }
 
     .section-title { text-align: center; font-size: 2em; margin: 60px 0 40px; font-weight: 600; }
 
     .content-card {
-        background: var(--bg-card); backdrop-filter: blur(10px);
-        padding: 40px; border-radius: 16px; margin-bottom: 30px;
-        box-shadow: 0 8px 30px rgba(0,0,0,.2);
-        border: 1px solid rgba(255,255,255,0.05);
+        background: var(--bg-card); backdrop-filter: blur(8px);
+        padding: 32px; border-radius: var(--radius-lg); margin-bottom: 24px;
+            box-shadow: 0 8px 30px rgba(0,0,0,.08);
+            border: 1px solid var(--border);
     }
-    .content-card h1 { color: var(--accent); margin-top: 0; font-size: 2.5em; }
+    .content-card h1 { color: var(--text-main); margin-top: 0; font-size: 2.5em; }
     .content-card h2 { color: var(--text-main); font-size: 1.8em; margin-top: 30px; margin-bottom: 15px; }
     .content-card p { color: var(--text-muted); font-size: 1.1em; line-height: 1.7; margin-bottom: 20px; }
     .content-card ul { color: var(--text-muted); font-size: 1.1em; line-height: 1.7; margin-bottom: 20px; padding-left: 20px; }
@@ -161,19 +249,19 @@
 
     .subject-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; padding-bottom: 80px; }
     .subject-card {
-        background: var(--bg-card); backdrop-filter: blur(10px); padding: 40px 30px; border-radius: 16px;
-        text-align: left; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        background: var(--bg-card); backdrop-filter: blur(8px); padding: 32px 24px; border-radius: 12px;
+        text-align: left; cursor: pointer; border: 1px solid var(--border); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative; overflow: hidden;
     }
-    .subject-card::before {
+        .subject-card::before {
         content: '';
         position: absolute;
         top: 0; left: 0; right: 0; height: 4px;
-        background: linear-gradient(to right, var(--primary), #8b5cf6);
+        background: var(--primary);
         opacity: 0;
         transition: opacity 0.3s ease;
     }
-    .subject-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); border-color: rgba(255,255,255,0.1); }
+    .subject-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12); border-color: var(--border); }
     .subject-card:hover::before { opacity: 1; }
 
     .hero-ambient {
@@ -190,9 +278,9 @@
         opacity: 0.24;
         animation: drift 10s ease-in-out infinite alternate;
     }
-    .hero-ambient .orb.one { width: 230px; height: 230px; background: #3b82f6; top: 30px; left: 8%; }
-    .hero-ambient .orb.two { width: 180px; height: 180px; background: #8b5cf6; top: 40px; right: 12%; animation-duration: 12s; }
-    .hero-ambient .orb.three { width: 160px; height: 160px; background: #14b8a6; bottom: 20px; left: 20%; animation-duration: 14s; }
+    .hero-ambient .orb.one { width: 230px; height: 230px; background: rgba(255,214,10,0.08); top: 30px; left: 8%; }
+    .hero-ambient .orb.two { width: 180px; height: 180px; background: rgba(255,214,10,0.06); top: 40px; right: 12%; animation-duration: 12s; }
+    .hero-ambient .orb.three { width: 160px; height: 160px; background: rgba(255,214,10,0.05); bottom: 20px; left: 20%; animation-duration: 14s; }
 
     .cursor-glow {
         position: fixed;
@@ -201,7 +289,7 @@
         border-radius: 50%;
         pointer-events: none;
         z-index: -2;
-        background: radial-gradient(circle, rgba(59,130,246,0.22) 0%, rgba(59,130,246,0.08) 35%, transparent 70%);
+        background: var(--primary-light);
         transform: translate(-50%, -50%);
         filter: blur(18px);
         transition: transform 0.1s ease-out;
@@ -227,7 +315,7 @@
     body.focus-mode .subject-card,
     body.focus-mode .mini-card,
     body.focus-mode .sponsor-card {
-        box-shadow: 0 0 0 1px rgba(255,255,255,0.08), 0 18px 42px rgba(0,0,0,0.35);
+        box-shadow: 0 0 0 1px var(--surface-tint), 0 18px 42px rgba(0,0,0,0.35);
     }
 
     .feature-grid, .sponsor-grid {
@@ -246,16 +334,16 @@
     }
 
     .live-pill {
-        background: rgba(15, 23, 42, 0.92);
-        border: 1px solid rgba(148, 163, 184, 0.18);
-        border-radius: 16px;
+        background: var(--surface);
+        border: 1px solid rgba(0,0,0,0.06);
+        border-radius: var(--radius-lg);
         padding: 14px 16px;
-        box-shadow: 0 14px 30px rgba(15, 23, 42, 0.35);
+        box-shadow: 0 6px 16px rgba(16,24,40,0.06);
     }
 
     .live-pill span {
         display: block;
-        color: #93c5fd;
+        color: var(--text-muted);
         font-size: 0.78rem;
         text-transform: uppercase;
         letter-spacing: 0.18em;
@@ -263,7 +351,7 @@
     }
 
     .live-pill strong {
-        color: #fff;
+        color: var(--text-main);
         font-size: 1.08rem;
     }
 
@@ -275,7 +363,7 @@
 
     .tip-box p {
         margin: 0;
-        color: #dbeafe;
+        color: var(--text-muted);
         line-height: 1.6;
     }
 
@@ -288,7 +376,7 @@
         border: 1px solid rgba(147, 197, 253, 0.2);
         border-radius: 999px;
         padding: 8px 12px;
-        color: #bfdbfe;
+        color: var(--text-main);
         font-size: 0.92rem;
     }
 
@@ -316,15 +404,15 @@
     .progress-fill {
         height: 100%;
         border-radius: inherit;
-        background: linear-gradient(90deg, var(--primary), #8b5cf6);
+        background: var(--v-accent);
     }
 
     .mini-card, .sponsor-card {
-        background: rgba(15, 23, 42, 0.9);
-        border: 1px solid rgba(148, 163, 184, 0.18);
-        border-radius: 16px;
+        background: var(--surface);
+        border: 1px solid rgba(0,0,0,0.06);
+        border-radius: var(--radius-lg);
         padding: 18px;
-        box-shadow: 0 14px 30px rgba(15, 23, 42, 0.35);
+        box-shadow: 0 8px 20px rgba(16,24,40,0.06);
     }
 
     .partner-editor {
@@ -341,20 +429,20 @@
     }
 
     .partner-card {
-        background: rgba(15, 23, 42, 0.9);
-        border: 1px solid rgba(148, 163, 184, 0.18);
-        border-radius: 16px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
         padding: 16px;
-        box-shadow: 0 12px 26px rgba(15, 23, 42, 0.32);
+        box-shadow: 0 8px 20px rgba(16,24,40,0.06);
     }
 
     .partner-card img {
         width: 100%;
         height: 110px;
         object-fit: cover;
-        border-radius: 12px;
+        border-radius: var(--radius);
         margin-bottom: 10px;
-        background: rgba(255,255,255,0.06);
+        background: var(--surface-tint);
     }
 
     .partner-fallback {
@@ -365,15 +453,15 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: linear-gradient(135deg, rgba(96,165,250,0.28), rgba(168,85,247,0.28));
-        color: #fff;
+        background: var(--surface-tint);
+        color: var(--text-main);
         font-size: 1.6rem;
         font-weight: 700;
     }
 
     .mini-card h3, .sponsor-card h3 {
         margin-top: 0;
-        color: #fff;
+        color: var(--text-main);
         font-size: 1.05rem;
     }
 
@@ -404,8 +492,8 @@
         padding: 12px 14px;
         border-radius: 10px;
         border: 1px solid rgba(148, 163, 184, 0.18);
-        background: rgba(15, 23, 42, 0.9);
-        color: #fff;
+        background: var(--surface);
+        color: var(--text-main);
         font: inherit;
     }
 
@@ -424,24 +512,24 @@
     }
 
     .quiz-card {
-        background: rgba(15, 23, 42, 0.95);
-        border: 1px solid rgba(148, 163, 184, 0.18);
-        border-radius: 16px;
+        background: var(--surface);
+        border: 1px solid rgba(0,0,0,0.06);
+        border-radius: var(--radius-lg);
         padding: 18px;
-        box-shadow: 0 16px 32px rgba(15, 23, 42, 0.35);
+        box-shadow: 0 12px 26px rgba(16,24,40,0.06);
     }
 
     .quiz-label {
         text-transform: uppercase;
         letter-spacing: 0.2em;
         font-size: 0.75rem;
-        color: #93c5fd;
+        color: var(--text-muted);
     }
 
     .quiz-card h3 {
         font-size: 1.15rem;
         margin: 4px 0 12px;
-        color: #fff;
+        color: var(--text-main);
     }
 
     .quiz-options {
@@ -451,15 +539,15 @@
 
     .quiz-option {
         text-align: left;
-        background: rgba(30, 41, 59, 0.96);
+        background: var(--surface);
         color: var(--text-main);
-        border: 1px solid rgba(148, 163, 184, 0.18);
+        border: 1px solid rgba(0,0,0,0.06);
         box-shadow: none;
         padding: 10px 12px;
     }
 
     .quiz-option:hover {
-        background: rgba(51, 65, 85, 0.98);
+        background: var(--surface-tint);
         transform: translateY(-1px);
     }
 
@@ -474,7 +562,7 @@
     }
 
     .quiz-tip {
-        color: #bfdbfe;
+        color: var(--text-muted);
         font-size: 0.92rem;
         margin-top: 10px;
     }
@@ -484,30 +572,30 @@
 
     .video-container {
         position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;
-        border-radius: 12px; margin-bottom: 30px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        border-radius: 12px; margin-bottom: 30px; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     }
     .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
 
     /* Calculator */
-    .calc { max-width: 350px; background: #0f172a; padding: 25px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); }
-    #calc-display { width: 100%; box-sizing: border-box; padding: 20px; font-size: 24px; text-align: right; margin-bottom: 20px; border-radius: 8px; border: 1px solid #334155; background: #1e293b; color: #f8fafc; font-family: monospace; }
+    .calc { max-width: 350px; background: var(--surface); padding: 25px; border-radius: 12px; border: 1px solid rgba(0,0,0,0.06); }
+    #calc-display { width: 100%; box-sizing: border-box; padding: 20px; font-size: 24px; text-align: right; margin-bottom: 20px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.06); background: var(--surface); color: var(--text-main); font-family: monospace; }
     .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-    .calc-grid button { padding: 20px; background: #334155; font-size: 1.2em; border-radius: 8px; box-shadow: none; }
-    .calc-grid button:hover { background: #475569; transform: none; }
+    .calc-grid button { padding: 20px; background: var(--surface-tint); font-size: 1.2em; border-radius: 8px; box-shadow: none; color: var(--text-main); }
+    .calc-grid button:hover { background: var(--surface); transform: none; }
     .calc-grid button[onclick="calculate()"] { background: var(--primary); }
     .calc-grid button[onclick="calculate()"]:hover { background: var(--primary-hover); }
 
     /* Quiz Elements */
     .quiz-q { margin-bottom: 20px; background: rgba(0,0,0,0.15); padding: 15px; border-radius: 8px; }
     .quiz-q p { margin: 0 0 10px 0; font-weight: 600; }
-    .quiz-q input { padding: 8px; border-radius: 4px; border: 1px solid #334155; background: #0f172a; color: #fff; width: 100px; }
-    footer { text-align: center; color: #64748b; padding: 40px; font-size: 0.9em; }
+    .quiz-q input { padding: 8px; border-radius: 4px; border: 1px solid rgba(0,0,0,0.06); background: var(--surface); color: var(--text-main); width: 100px; }
+    footer { text-align: center; color: var(--text-muted); padding: 40px; font-size: 0.9em; }
 
     /* --- Web UI --- */
     :root {
         --g-bg0: #0d0f12;
         --g-bg1: #181c21;
-        --g-surface: rgba(255,255,255,0.04);
+        --g-surface: var(--surface-tint);
         --g-ac: #9de5ff;
         --g-tx: #f0f4f8;
         --g-muted: #7d8a98;
@@ -528,14 +616,14 @@
         box-sizing: border-box;
     }
     .vault-sidebar {
-        background: linear-gradient(180deg, rgba(8,16,34,0.96), rgba(16,24,45,0.82));
-        border: 1px solid rgba(255,255,255,0.12);
-        border-radius: 24px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
         padding: 18px;
         display: flex;
         flex-direction: column;
         gap: 16px;
-        box-shadow: 0 18px 50px rgba(0,0,0,0.35);
+        box-shadow: 0 12px 30px rgba(16,24,40,0.06);
         position: sticky;
         top: 20px;
         align-self: start;
@@ -545,32 +633,32 @@
         align-items: center;
         gap: 12px;
         padding-bottom: 10px;
-        border-bottom: 1px solid rgba(255,255,255,0.09);
+        border-bottom: 1px solid var(--border);
     }
     .vault-brand-icon {
         width: 48px;
         height: 48px;
-        border-radius: 14px;
+        border-radius: 8px;
         display: grid;
         place-items: center;
         font-size: 1.25rem;
-        background: linear-gradient(135deg, var(--v-accent), var(--v-btn));
-        color: #07111f;
+        background: var(--v-accent);
+        color: var(--text-on-primary);
         font-weight: 700;
     }
-    .vault-brand h2 { font-size: 1.02rem; margin: 0 0 2px; color: #fff; }
+    .vault-brand h2 { font-size: 1.02rem; margin: 0 0 2px; color: var(--vault-heading); }
     .vault-brand p { margin: 0; font-size: 0.8rem; color: var(--v-muted); }
     .vault-toolbar { display: flex; flex-direction: column; gap: 8px; }
     .ghost-btn {
-        background: rgba(255,255,255,0.09);
-        color: #fff;
-        border: 1px solid rgba(255,255,255,0.12);
+        background: var(--surface-tint);
+        color: var(--text-main);
+        border: 1px solid var(--border);
     }
-    .danger-btn { background: linear-gradient(135deg, #ef4444, #dc2626); }
+    .danger-btn { background: #ef4444; }
     .vault-status-card {
-        background: rgba(255,255,255,0.06);
-        border: 1px solid rgba(255,255,255,0.09);
-        border-radius: 16px;
+        background: var(--surface-tint);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
         padding: 12px;
     }
     .pill-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
@@ -580,17 +668,17 @@
         padding: 6px 9px;
         border-radius: 999px;
         font-size: 0.74rem;
-        background: rgba(255,255,255,0.08);
+        background: var(--surface-tint);
         color: var(--v-accent);
     }
     .vault-status-card p { margin: 0; font-size: 0.82rem; color: var(--v-muted); line-height: 1.5; }
     .vault-nav { display: flex; flex-direction: column; gap: 8px; }
     .vault-tab-btn {
         text-align: left;
-        background: rgba(255,255,255,0.06);
-        color: #fff;
+        background: var(--surface-tint);
+        color: var(--text-main);
         padding: 12px 14px;
-        border-radius: 14px;
+        border-radius: var(--radius);
         border: 1px solid transparent;
         display: flex;
         align-items: center;
@@ -599,10 +687,10 @@
         box-shadow: none;
     }
     .vault-tab-btn.active {
-        background: linear-gradient(135deg, var(--v-btn), var(--v-accent));
-        color: #07111f;
+        background: var(--v-btn);
+        color: var(--text-on-primary);
         font-weight: 700;
-        box-shadow: 0 12px 18px rgba(0,0,0,0.25);
+        box-shadow: 0 6px 12px rgba(16,24,40,0.06);
     }
     .vault-shell, .vault-sidebar, .vault-main, .v-header, .v-box, .card, .theme-card, .vault-tab-btn, .vault-status-card, .vault-quick-card, .cloak-chip {
         color: var(--vault-body);
@@ -614,10 +702,10 @@
         color: var(--vault-muted);
     }
     .vault-sidebar-footer .vault-quick-card {
-        border-radius: 16px;
+        border-radius: var(--radius-lg);
         padding: 14px;
-        background: rgba(255,255,255,0.05);
-        border: 1px solid rgba(255,255,255,0.08);
+        background: var(--surface);
+        border: 1px solid rgba(0,0,0,0.06);
     }
     .theme-grid {
         display: grid;
@@ -626,20 +714,20 @@
         margin-top: 12px;
     }
     .theme-card {
-        border: 1px solid rgba(255,255,255,0.1);
-        background: rgba(255,255,255,0.06);
-        color: #fff;
-        border-radius: 16px;
+        border: 1px solid rgba(0,0,0,0.06);
+        background: var(--surface);
+        color: var(--text-main);
+        border-radius: var(--radius-lg);
         padding: 14px;
         text-align: left;
         cursor: pointer;
         transition: transform 0.2s ease, border-color 0.2s ease;
     }
     .theme-card:hover { transform: translateY(-3px); border-color: var(--v-accent); }
-    .theme-card.active { border-color: var(--v-accent); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08); }
+    .theme-card.active { border-color: var(--v-accent); box-shadow: inset 0 0 0 1px var(--surface-tint); }
     .theme-preview {
         height: 72px;
-        border-radius: 12px;
+        border-radius: var(--radius);
         margin-bottom: 10px;
         display: flex;
         align-items: center;
@@ -650,41 +738,41 @@
     }
     .theme-card h4 { margin: 0 0 5px; font-size: 0.95rem; }
     .theme-card p { margin: 0; font-size: 0.8rem; color: var(--v-muted); line-height: 1.5; }
-    .vault-quick-card h4 { margin: 0 0 6px; color: #fff; font-size: 0.95rem; }
+    .vault-quick-card h4 { margin: 0 0 6px; color: var(--vault-heading); font-size: 0.95rem; }
     .vault-quick-card p { margin: 0; font-size: 0.8rem; color: var(--v-muted); line-height: 1.55; }
 
     .vault-main { display: flex; flex-direction: column; gap: 14px; }
-    .v-header { text-align: left; padding: 30px 28px; background: linear-gradient(135deg, rgba(20,30,53,0.95), rgba(25,31,52,0.8)); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; position: relative; box-shadow: 0 14px 38px rgba(0,0,0,0.25); }
-    .v-header h1 { color: var(--v-accent); margin: 0 0 10px 0; font-size: 1.8rem; }
+    .v-header { text-align: left; padding: 30px 28px; background: var(--surface-tint); border: 1px solid rgba(0,0,0,0.06); border-radius: var(--radius-lg); position: relative; box-shadow: 0 12px 30px rgba(16,24,40,0.06); }
+    .v-header h1 { color: var(--text-main); margin: 0 0 10px 0; font-size: 1.8rem; }
     .v-box {
-        background: linear-gradient(135deg, rgba(18,24,41,0.92), rgba(11,16,28,0.88));
-        border: 1px solid rgba(255,255,255,0.08);
-        border-radius: 18px;
+        background: var(--surface);
+        border: 1px solid rgba(0,0,0,0.06);
+        border-radius: var(--radius-lg);
         padding: 20px;
-        box-shadow: 0 14px 34px rgba(0,0,0,0.25);
+        box-shadow: 0 12px 28px rgba(16,24,40,0.06);
     }
-    .v-input { padding: 10px; border-radius: 10px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: inherit; font-family: inherit; }
-    .v-btn { background: var(--v-btn); color: white; padding: 10px 20px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; box-shadow: none; }
+    .v-input { padding: 10px; border-radius: var(--radius); background: var(--surface); border: 1px solid rgba(0,0,0,0.06); color: inherit; font-family: inherit; }
+    .v-btn { background: var(--v-btn); color: var(--v-btn-foreground, var(--text-on-primary, #000000)); padding: 10px 20px; border-radius: var(--radius); border: none; font-weight: bold; cursor: pointer; box-shadow: none; }
     .v-btn:hover { filter: brightness(1.1); transform: none; box-shadow: none; }
 
     /* Perfect Grid for Vault Files & Games */
     .grid { display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 18px; padding: 10px 0 0; }
     .card {
-        width: 180px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-        padding: 12px; text-align: center; border-radius: 14px; cursor: pointer; transition: transform 0.2s;
+        width: 180px; background: var(--card-bg, var(--surface)); border: 1px solid var(--border);
+        padding: 12px; text-align: center; border-radius: var(--radius); cursor: pointer; transition: transform 0.16s;
     }
-    .card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.1); }
-    .card img { width: 100%; border-radius: 10px; aspect-ratio: 1/1; object-fit: cover; margin-bottom: 10px; }
-    .card h3 { font-size: 14px; margin: 0; color: var(--v-accent); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .card:hover { transform: translateY(-5px); background: var(--card-bg-hover, var(--surface-tint)); }
+    .card img { width: 100%; border-radius: var(--radius); aspect-ratio: 1/1; object-fit: cover; margin-bottom: 10px; }
+    .card h3 { font-size: 14px; margin: 0; color: var(--text-main); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .game-category-section { width: 100%; margin-bottom: 24px; }
     .game-category-header {
         display: flex; justify-content: space-between; align-items: center;
         margin: 0 0 12px 0; padding: 10px 14px; border-radius: 999px;
-        background: rgba(255,255,255,0.08); color: var(--v-accent); font-weight: 700;
+        background: var(--surface-tint); color: var(--text-main); font-weight: 700;
         letter-spacing: 0.04em; text-transform: uppercase; font-size: 0.82rem;
     }
     .game-category-header span {
-        padding: 4px 8px; border-radius: 999px; background: rgba(255,255,255,0.12); color: #fff; font-size: 0.78rem;
+        padding: 4px 8px; border-radius: 999px; background: var(--v-accent); color: var(--text-on-primary); font-size: 0.78rem;
     }
     .game-category-grid { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-start; }
     .education-boost-card { min-height: 180px; display: flex; flex-direction: column; justify-content: space-between; }
@@ -697,15 +785,15 @@
         align-items: center; justify-content: center; overflow-y: auto;
     }
     .settings-container {
-        background: linear-gradient(135deg, rgba(15,23,42,0.98), rgba(30,41,59,0.96));
+        background: var(--surface);
         padding: 32px;
-        border-radius: 20px;
+        border-radius: var(--radius-lg);
         width: 92%;
         max-width: 560px;
         max-height: calc(100vh - 40px);
         overflow-y: auto;
         box-sizing: border-box;
-        border: 1px solid rgba(255,255,255,0.12);
+        border: 1px solid var(--border);
         box-shadow: 0 24px 60px rgba(0,0,0,.45);
         position: relative;
     }
@@ -713,23 +801,34 @@
         margin-bottom: 18px;
         padding: 14px;
         border-radius: 14px;
-        background: rgba(255,255,255,0.05);
-        border: 1px solid rgba(255,255,255,0.08);
+        background: var(--surface-tint);
+        border: 1px solid rgba(0,0,0,0.04);
     }
     .settings-label { display: block; margin-bottom: 8px; color: var(--text-main); font-weight: 600; }
     .settings-select {
-        width: 100%; box-sizing: border-box; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.16); background: rgba(15,23,42,0.75); color: #fff;
+        width: 100%; box-sizing: border-box; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.06); background: var(--surface); color: var(--text-main);
     }
     .settings-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
     .switch-row { display: flex; align-items: center; gap: 10px; margin: 10px 0 0; color: var(--text-muted); }
     .switch-row input { accent-color: var(--primary); width: 18px; height: 18px; }
     .color-row { display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 25px; }
-    .color-option { width: 45px; height: 45px; border-radius: 50%; cursor: pointer; border: 2px solid rgba(255,255,255,0.2); transition: transform 0.2s; }
+    .color-option { width: 45px; height: 45px; border-radius: 50%; cursor: pointer; border: 2px solid var(--border); transition: transform 0.2s; }
     .color-option:hover { transform: scale(1.1); }
 
     #gamePreviewOverlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 1000; flex-direction: column; align-items: center; justify-content: center; }
-    .preview-container { width: 85%; height: 85%; background: #000; position: relative; border-radius: 10px; overflow: hidden; border: 1px solid #333; }
+    .preview-container { width: 85%; height: 85%; background: var(--surface); position: relative; border-radius: var(--radius); overflow: hidden; border: 1px solid rgba(0,0,0,0.25); }
     #previewFrame { width: 100%; height: 100%; border: none; }
+    .preview-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 16px;
+        background: var(--primary);
+        color: var(--text-on-primary);
+    }
+    .preview-title h2 { margin: 0; font-size: 1.1rem; }
+    .preview-controls { display: flex; gap: 8px; }
+    .preview-controls button { background: var(--surface-hover); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 8px; cursor: pointer; }
 </style>
 </head>
 <body>
@@ -740,8 +839,12 @@
 <div id="public-portal">
     <nav class="navbar">
         <div class="navbar-brand">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary);"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-main);"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
             <span id="headerName">BrightPath Learning</span>
+        </div>
+        <div class="navbar-search">
+            <input type="text" id="navbarSearchInput" placeholder="Search subjects" onkeypress="handleNavbarSearch(event)" />
+            <button class="navbar-search-btn" type="button" onclick="performNavbarSearch()" title="Search">🔍</button>
         </div>
         <div class="nav-links">
             <button class="nav-tab active" type="button" onclick="showPage('home')">Home</button>
@@ -751,6 +854,8 @@
             <button class="nav-tab" type="button" onclick="showPage('sponsors')">Sponsors</button>
         </div>
         <div class="nav-actions">
+            <button class="v-btn" onclick="showPage('math')">Calculator</button>
+            <button class="v-btn" onclick="window.open('https://ptable.com','_blank')">Periodic Table</button>
             <button class="btn-outline" onclick="openSettings()">⚙️ Settings</button>
         </div>
     </nav>
@@ -798,7 +903,7 @@
         </div>
 
         <div class="reveal content-card" style="margin-bottom: 60px;">
-            <h2 style="margin-top:0; color:var(--accent);">Why students keep coming back</h2>
+            <h2 style="margin-top:0; color:var(--text-main);">Why students keep coming back</h2>
             <p>BrightPath is an easy learning solution to help you get better at learning, whether it's for math, science, history, and many other subjects.</p>
             <div class="feature-grid">
                 <div class="mini-card"><h3>⚡ Easy Start</h3><p>Since everything is coded into this one page, it takes no time to get started.</p></div>
@@ -808,7 +913,7 @@
         </div>
 
         <div class="content-card" style="margin-bottom:40px;">
-            <h2 style="color:var(--accent)">Study sections</h2>
+            <h2 style="color:var(--text-main)">Study sections</h2>
             <p>We have a large range of sections to study with, from math to computer science.</p>
             <div class="feature-grid">
                 <div class="mini-card"><h3>📈 Study plans</h3><p>Short study plans to help you get ready to learn</p></div>
@@ -818,13 +923,13 @@
         </div>
 
         <div class="content-card" style="margin-bottom:40px;">
-            <h2 style="color:var(--accent)">Featured sponsors</h2>
+            <h2 style="color:var(--text-main)">Featured sponsors</h2>
             <p id="sponsorIntro">These people have helped us grow so we can be great.</p>
             <div class="sponsor-grid" id="sponsorShowcase"></div>
         </div>
 
         <div class="content-card" style="margin-bottom:40px;">
-            <h2 style="margin-top:0; color:var(--accent);">Daily highlight</h2>
+            <h2 style="margin-top:0; color:var(--text-main);">Daily highlight</h2>
             <div class="feature-grid">
                 <article class="mini-card tip-box">
                     <span class="tip-badge">💡 Tip of the day</span>
@@ -848,18 +953,18 @@
         </div>
 
         <div class="content-card" style="margin-bottom:50px;">
-            <h2 style="color:var(--accent)">Learning Path Modules</h2>
+            <h2 style="color:var(--text-main)">Learning Path Modules</h2>
             <p>Tons of subjects just for you to help your study journy</p>
             <div style="display:flex;gap:12px;flex-wrap:wrap;">
-                <span style="padding:10px 16px;background:rgba(255,255,255,.06);border-radius:999px;">📐 Math Basics</span>
-                <span style="padding:10px 16px;background:rgba(255,255,255,.06);border-radius:999px;">🔬 Science Lab</span>
-                <span style="padding:10px 16px;background:rgba(255,255,255,.06);border-radius:999px;">💻 Computer Logic</span>
-                <span style="padding:10px 16px;background:rgba(255,255,255,.06);border-radius:999px;">🏛️ World History</span>
+                <span style="padding:10px 16px;background:var(--surface-tint);border-radius:999px;">📐 Math Basics</span>
+                <span style="padding:10px 16px;background:var(--surface-tint);border-radius:999px;">🔬 Science Lab</span>
+                <span style="padding:10px 16px;background:var(--surface-tint);border-radius:999px;">💻 Computer Logic</span>
+                <span style="padding:10px 16px;background:var(--surface-tint);border-radius:999px;">🏛️ World History</span>
             </div>
         </div>
 
         <div class="content-card" style="margin-bottom:40px;">
-            <h2 style="margin-top:0; color:var(--accent);">This week at BrightPath</h2>
+            <h2 style="margin-top:0; color:var(--text-main);">This week at BrightPath</h2>
             <div class="feature-grid">
                 <article class="mini-card"><h3>📅 Study Sprint</h3><p>New 20-minute focus blocks for reading, notes, and short practice sessions every weekday.</p></article>
                 <article class="mini-card"><h3>📰 Campus Notes</h3><p>Helpful reminders, quick definitions, and success tips from teachers and mentors in the BrightPath community.</p></article>
@@ -868,7 +973,7 @@
         </div>
 
         <div class="content-card" style="margin-bottom:40px;">
-            <h2 style="margin-top:0; color:var(--accent);">Quick stats</h2>
+            <h2 style="margin-top:0; color:var(--text-main);">Quick stats</h2>
             <div class="feature-grid">
                 <article class="mini-card"><h3>6 subjects</h3><p>Math, science, geography, literature, computer science, and history all in one place.</p></article>
                 <article class="mini-card"><h3>10-question quiz</h3><p>We let student learn with the questions, and they can get their answers instantally/.</p></article>
@@ -877,16 +982,16 @@
         </div>
 
         <div class="content-card" style="margin-bottom:40px;">
-            <h2 style="margin-top:0; color:var(--accent);">Stay in the loop</h2>
+            <h2 style="margin-top:0; color:var(--text-main);">Stay in the loop</h2>
             <p>Join the community email list for reminder notes, study challenges, and new practice tools.</p>
             <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center;">
-                <input type="email" placeholder="Enter your email" style="flex:1; min-width:260px; padding:12px 14px; border-radius:10px; border:1px solid rgba(148,163,184,0.2); background:rgba(15,23,42,0.9); color:#fff;" />
+                <input type="email" placeholder="Enter your email" style="flex:1; min-width:260px; padding:12px 14px; border-radius:10px; border:1px solid var(--border); background:var(--surface); color:var(--text-main);" />
                 <button type="button" onclick="alert('Thanks for subscribing to BrightPath updates!')">Subscribe</button>
             </div>
         </div>
 
         <div class="content-card" style="margin-bottom:30px;">
-            <h2 style="margin-top:0; color:var(--accent);">Find a topic fast</h2>
+            <h2 style="margin-top:0; color:var(--text-main);">Find a topic fast</h2>
             <p>Use this search to find the subject for you</p>
             <div class="search-shell">
                 <input id="topicSearch" type="search" placeholder="Search subjects, topics, or study areas" oninput="filterSubjects()" />
@@ -895,7 +1000,7 @@
         </div>
 
         <div class="content-card" style="margin-bottom:40px;">
-            <h2 style="margin-top:0; color:var(--accent);">Learning Boosters</h2>
+            <h2 style="margin-top:0; color:var(--text-main);">Learning Boosters</h2>
             <p>Help keep students learning without having them burnout.</p>
             <div class="feature-grid">
                 <article class="mini-card education-boost-card">
@@ -936,7 +1041,7 @@
                 <div class="subject-icon">📐</div>
                 <h3>Mathematics</h3>
                 <p>Learn math easily with this simple subject.</p>
-                <div style="margin-top:10px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.1);">
+                <div style="margin-top:10px; padding-top:10px; border-top:1px solid var(--border);">
                     <button class="v-btn" style="width:100%; padding:6px; font-size:0.85em;" onclick="event.stopPropagation(); showSubjectQuiz('math')">Quick Quiz</button>
                 </div>
             </div>
@@ -944,7 +1049,7 @@
                 <div class="subject-icon">🔬</div>
                 <h3>Science</h3>
                 <p>Learn sicence with our questions and notes on it</p>
-                <div style="margin-top:10px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.1);">
+                <div style="margin-top:10px; padding-top:10px; border-top:1px solid var(--border);">
                     <button class="v-btn" style="width:100%; padding:6px; font-size:0.85em;" onclick="event.stopPropagation(); showSubjectQuiz('science')">Quick Quiz</button>
                 </div>
             </div>
@@ -952,7 +1057,7 @@
                 <div class="subject-icon">🌍</div>
                 <h3>Geography</h3>
                 <p>Learn about the world around you and how it may be changing</p>
-                <div style="margin-top:10px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.1);">
+                <div style="margin-top:10px; padding-top:10px; border-top:1px solid var(--border);">
                     <button class="v-btn" style="width:100%; padding:6px; font-size:0.85em;" onclick="event.stopPropagation(); showSubjectQuiz('geography')">Quick Quiz</button>
                 </div>
             </div>
@@ -960,7 +1065,7 @@
                 <div class="subject-icon">📚</div>
                 <h3>Literature</h3>
                 <p>Learn the basics of literature and about book authors..</p>
-                <div style="margin-top:10px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.1);">
+                <div style="margin-top:10px; padding-top:10px; border-top:1px solid var(--border);">
                     <button class="v-btn" style="width:100%; padding:6px; font-size:0.85em;" onclick="event.stopPropagation(); showSubjectQuiz('literature')">Quick Quiz</button>
                 </div>
             </div>
@@ -968,7 +1073,7 @@
                 <div class="subject-icon">💻</div>
                 <h3>Computer Science</h3>
                 <p>Learn about how computers work and the history of them</p>
-                <div style="margin-top:10px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.1);">
+                <div style="margin-top:10px; padding-top:10px; border-top:1px solid var(--border);">
                     <button class="v-btn" style="width:100%; padding:6px; font-size:0.85em;" onclick="event.stopPropagation(); showSubjectQuiz('computer-science')">Quick Quiz</button>
                 </div>
             </div>
@@ -976,7 +1081,7 @@
                 <div class="subject-icon">🏛️</div>
                 <h3>History</h3>
                 <p>Learn history from around the world like big wars, culture etc.</p>
-                <div style="margin-top:10px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.1);">
+                <div style="margin-top:10px; padding-top:10px; border-top:1px solid var(--border);">
                     <button class="v-btn" style="width:100%; padding:6px; font-size:0.85em;" onclick="event.stopPropagation(); showSubjectQuiz('history')">Quick Quiz</button>
                 </div>
             </div>
@@ -984,7 +1089,7 @@
                 <div class="subject-icon">💰</div>
                 <h3>Economics</h3>
                 <p>Understand markets, supply & demand, money, and how economies work.</p>
-                <div style="margin-top:10px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.1);">
+                <div style="margin-top:10px; padding-top:10px; border-top:1px solid var(--border);">
                     <button class="v-btn" style="width:100%; padding:6px; font-size:0.85em;" onclick="event.stopPropagation(); showSubjectQuiz('economics')">Quick Quiz</button>
                 </div>
             </div>
@@ -992,7 +1097,7 @@
                 <div class="subject-icon">🧠</div>
                 <h3>Psychology</h3>
                 <p>Explore human behavior, learning, emotions, and how our minds work.</p>
-                <div style="margin-top:10px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.1);">
+                <div style="margin-top:10px; padding-top:10px; border-top:1px solid var(--border);">
                     <button class="v-btn" style="width:100%; padding:6px; font-size:0.85em;" onclick="event.stopPropagation(); showSubjectQuiz('psychology')">Quick Quiz</button>
                 </div>
             </div>
@@ -1000,7 +1105,7 @@
                 <div class="subject-icon">🌱</div>
                 <h3>Environmental Science</h3>
                 <p>Study ecosystems, climate change, conservation, and sustainable living.</p>
-                <div style="margin-top:10px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.1);">
+                <div style="margin-top:10px; padding-top:10px; border-top:1px solid var(--border);">
                     <button class="v-btn" style="width:100%; padding:6px; font-size:0.85em;" onclick="event.stopPropagation(); showSubjectQuiz('environmental-science')">Quick Quiz</button>
                 </div>
             </div>
@@ -1018,7 +1123,7 @@
             </div>
         </div>
         <div class="content-card">
-            <h2 style="margin-top:0; color:var(--accent);">What students can expect</h2>
+            <h2 style="margin-top:0; color:var(--text-main);">What students can expect</h2>
             <ul>
                 <li>Simple navigation with real site-style sections.</li>
                 <li>Helpful notes, quick stats, and interactive practice.</li>
@@ -1039,7 +1144,7 @@
             </div>
         </div>
         <div class="content-card">
-            <h2 style="margin-top:0; color:var(--accent);">Today’s focus</h2>
+            <h2 style="margin-top:0; color:var(--text-main);">Today’s focus</h2>
             <div style="display:flex; flex-wrap:wrap; gap:10px;">
                 <span class="badge">🧠 Review one concept</span>
                 <span class="badge">📝 Take 5 notes</span>
@@ -1057,7 +1162,7 @@
             <div class="sponsor-grid" id="sponsorPageCards"></div>
         </div>
         <div class="content-card">
-            <h2 style="margin-top:0; color:var(--accent);">Why partnerships matter</h2>
+            <h2 style="margin-top:0; color:var(--text-main);">Why partnerships matter</h2>
             <p>Partner support helps create a site that feels like a real education platform, not just a single page. It adds trust, fresh ideas, and a stronger sense of community.</p>
         </div>
         <button class="btn-outline" onclick="showPage('home')">← Back to Home</button>
@@ -1073,7 +1178,7 @@
         </div>
         
         <div class="content-card">
-            <h2 style="margin-top:0; color:var(--accent);">Interactive Calculator</h2>
+            <h2 style="margin-top:0; color:var(--text-main);">Interactive Calculator</h2>
             <p>Run quick tasks with this calculation tool, or type your operational key sequence to open secondary dashboards.</p>
             <div class="calc">
                 <input id="calc-display" readonly>
@@ -1104,19 +1209,19 @@
                 <button class="v-btn" style="background:#a3e635;" onclick="showDetailedContent('chemistry')">Chemistry Guide</button>
                 <button class="v-btn" style="background:#10b981;" onclick="showDetailedContent('biology')">Biology Fundamentals</button>
             </div>
-            <div id="physics" class="detail-content hidden" style="margin-top:20px; padding:15px; background:rgba(255,255,255,0.05); border-radius:10px;">
+            <div id="physics" class="detail-content hidden" style="margin-top:20px; padding:15px; background:var(--surface-tint); border-radius:10px;">
                 <h3>Physics Essentials</h3>
                 <p><strong>Newton's Laws of Motion:</strong> Objects at rest stay at rest unless acted upon by force. Force equals mass times acceleration.</p>
                 <p><strong>Types of Energy:</strong> Kinetic energy (motion), potential energy (stored), thermal energy (heat), and more.</p>
                 <p><strong>Key Concepts:</strong> Velocity, acceleration, friction, gravity, momentum, and work.</p>
             </div>
-            <div id="chemistry" class="detail-content hidden" style="margin-top:20px; padding:15px; background:rgba(255,255,255,0.05); border-radius:10px;">
+            <div id="chemistry" class="detail-content hidden" style="margin-top:20px; padding:15px; background:var(--surface-tint); border-radius:10px;">
                 <h3>Chemistry Guide</h3>
                 <p><strong>The Periodic Table:</strong> Elements organized by atomic number. Each element has unique properties.</p>
                 <p><strong>Chemical Reactions:</strong> Reactants combine to form products. Reactions can be exothermic or endothermic.</p>
                 <p><strong>Bonding:</strong> Ionic bonds (electron transfer), covalent bonds (electron sharing), and hydrogen bonds.</p>
             </div>
-            <div id="biology" class="detail-content hidden" style="margin-top:20px; padding:15px; background:rgba(255,255,255,0.05); border-radius:10px;">
+            <div id="biology" class="detail-content hidden" style="margin-top:20px; padding:15px; background:var(--surface-tint); border-radius:10px;">
                 <h3>Biology Fundamentals</h3>
                 <p><strong>Cell Structure:</strong> Nucleus controls the cell, mitochondria produces energy, ribosomes make proteins.</p>
                 <p><strong>DNA & Genetics:</strong> DNA carries genetic information. Genes are inherited from parents.</p>
@@ -1200,13 +1305,13 @@
                 <button class="v-btn" style="background:#f59e0b;" onclick="showDetailedContent('microeconomics')">Microeconomics</button>
                 <button class="v-btn" style="background:#d97706;" onclick="showDetailedContent('macroeconomics')">Macroeconomics</button>
             </div>
-            <div id="microeconomics" class="detail-content hidden" style="margin-top:20px; padding:15px; background:rgba(255,255,255,0.05); border-radius:10px;">
+            <div id="microeconomics" class="detail-content hidden" style="margin-top:20px; padding:15px; background:var(--surface-tint); border-radius:10px;">
                 <h3>Microeconomics</h3>
                 <p><strong>Individual Behavior:</strong> How consumers and businesses make decisions about buying and selling.</p>
                 <p><strong>Market Structure:</strong> Perfect competition, monopoly, oligopoly, and monopolistic competition.</p>
                 <p><strong>Pricing:</strong> How firms set prices based on costs, competition, and demand.</p>
             </div>
-            <div id="macroeconomics" class="detail-content hidden" style="margin-top:20px; padding:15px; background:rgba(255,255,255,0.05); border-radius:10px;">
+            <div id="macroeconomics" class="detail-content hidden" style="margin-top:20px; padding:15px; background:var(--surface-tint); border-radius:10px;">
                 <h3>Macroeconomics</h3>
                 <p><strong>Economic Growth:</strong> GDP measures total production. Growth indicates a healthy economy.</p>
                 <p><strong>Inflation:</strong> Rising prices reduce the value of money over time.</p>
@@ -1231,13 +1336,13 @@
                 <button class="v-btn" style="background:#8b5cf6;" onclick="showDetailedContent('learning')">Learning Theories</button>
                 <button class="v-btn" style="background:#a78bfa;" onclick="showDetailedContent('emotions')">Emotions & Behavior</button>
             </div>
-            <div id="learning" class="detail-content hidden" style="margin-top:20px; padding:15px; background:rgba(255,255,255,0.05); border-radius:10px;">
+            <div id="learning" class="detail-content hidden" style="margin-top:20px; padding:15px; background:var(--surface-tint); border-radius:10px;">
                 <h3>Learning Theories</h3>
                 <p><strong>Classical Conditioning:</strong> Stimulus-response learning. Pavlov's dogs learned to salivate at a bell.</p>
                 <p><strong>Operant Conditioning:</strong> Behavior is shaped by rewards and punishments.</p>
                 <p><strong>Social Learning:</strong> People learn by observing others and imitating behavior.</p>
             </div>
-            <div id="emotions" class="detail-content hidden" style="margin-top:20px; padding:15px; background:rgba(255,255,255,0.05); border-radius:10px;">
+            <div id="emotions" class="detail-content hidden" style="margin-top:20px; padding:15px; background:var(--surface-tint); border-radius:10px;">
                 <h3>Emotions & Behavior</h3>
                 <p><strong>Basic Emotions:</strong> Joy, sadness, anger, fear, surprise, and disgust are universal.</p>
                 <p><strong>Motivation:</strong> Drives like hunger, thirst, and the need for achievement push behavior.</p>
@@ -1263,19 +1368,19 @@
                 <button class="v-btn" style="background:#10b981;" onclick="showDetailedContent('climate')">Climate & Change</button>
                 <button class="v-btn" style="background:#34d399;" onclick="showDetailedContent('sustainability')">Sustainability</button>
             </div>
-            <div id="ecosystems" class="detail-content hidden" style="margin-top:20px; padding:15px; background:rgba(255,255,255,0.05); border-radius:10px;">
+            <div id="ecosystems" class="detail-content hidden" style="margin-top:20px; padding:15px; background:var(--surface-tint); border-radius:10px;">
                 <h3>Ecosystems</h3>
                 <p><strong>Food Chains & Webs:</strong> Energy flows from producers (plants) to consumers to decomposers.</p>
                 <p><strong>Biodiversity:</strong> The variety of species in an ecosystem. Greater diversity means greater resilience.</p>
                 <p><strong>Biomes:</strong> Tropical rainforests, deserts, tundra, and aquatic environments have distinct characteristics.</p>
             </div>
-            <div id="climate" class="detail-content hidden" style="margin-top:20px; padding:15px; background:rgba(255,255,255,0.05); border-radius:10px;">
+            <div id="climate" class="detail-content hidden" style="margin-top:20px; padding:15px; background:var(--surface-tint); border-radius:10px;">
                 <h3>Climate & Change</h3>
                 <p><strong>Greenhouse Effect:</strong> CO₂ and methane trap heat in the atmosphere, warming the planet.</p>
                 <p><strong>Global Warming:</strong> Rising temperatures cause melting ice, rising sea levels, and extreme weather.</p>
                 <p><strong>Carbon Cycle:</strong> Carbon moves between atmosphere, oceans, soil, and living organisms.</p>
             </div>
-            <div id="sustainability" class="detail-content hidden" style="margin-top:20px; padding:15px; background:rgba(255,255,255,0.05); border-radius:10px;">
+            <div id="sustainability" class="detail-content hidden" style="margin-top:20px; padding:15px; background:var(--surface-tint); border-radius:10px;">
                 <h3>Sustainability</h3>
                 <p><strong>Renewable Resources:</strong> Solar, wind, hydro power that can be replenished.</p>
                 <p><strong>Conservation:</strong> Protecting forests, wetlands, and endangered species.</p>
@@ -1290,15 +1395,15 @@
             <h1>📝 My Study Notes</h1>
             <p>Keep track of your learning with personal notes. Write, organize, and review your study materials.</p>
             <div style="margin-top:15px;">
-                <input type="text" id="noteTitle" placeholder="Note title (e.g., Chapter 3 - Photosynthesis)" style="width:100%; padding:12px; border-radius:8px; border:1px solid rgba(255,255,255,0.2); background:rgba(15,23,42,0.9); color:#fff; margin-bottom:10px; font-family:inherit;" />
-                <textarea id="noteContent" placeholder="Write your notes here..." style="width:100%; min-height:200px; padding:12px; border-radius:8px; border:1px solid rgba(255,255,255,0.2); background:rgba(15,23,42,0.9); color:#fff; margin-bottom:10px; font-family:inherit; resize:vertical;"></textarea>
+                <input type="text" id="noteTitle" placeholder="Note title (e.g., Chapter 3 - Photosynthesis)" style="width:100%; padding:12px; border-radius:8px; border:1px solid var(--border); background:var(--surface); color:var(--text-main); margin-bottom:10px; font-family:inherit;" />
+                <textarea id="noteContent" placeholder="Write your notes here..." style="width:100%; min-height:200px; padding:12px; border-radius:8px; border:1px solid var(--border); background:var(--surface); color:var(--text-main); margin-bottom:10px; font-family:inherit; resize:vertical;"></textarea>
                 <div style="display:flex; gap:10px;">
                     <button onclick="saveNote()">💾 Save Note</button>
                     <button class="btn-outline" onclick="clearNote()">Clear</button>
                 </div>
             </div>
             <div style="margin-top:30px;">
-                <h2 style="color:var(--accent); margin-bottom:15px;">Saved Notes</h2>
+                <h2 style="color:var(--text-main); margin-bottom:15px;">Saved Notes</h2>
                 <div id="notesList" style="display:grid; gap:12px;"></div>
                 <p id="noNotesMsg" style="color:var(--text-muted);">No notes yet. Create your first note above!</p>
             </div>
@@ -1320,7 +1425,7 @@
                     <button onclick="gradeQuiz()">Check my score</button>
                     <button class="btn-outline" onclick="resetQuiz()">Reset quiz</button>
                 </div>
-                <div id="quizResult" style="margin-top:10px;font-size:1.05em; color:#bfdbfe;"></div>
+                <div id="quizResult" style="margin-top:10px;font-size:1.05em; color:var(--text-main);"></div>
             </div>
         </div>
         <button class="btn-outline" onclick="showPage('home')">← Back Home</button>
@@ -1357,7 +1462,7 @@
             </div>
 
             <nav class="vault-nav" id="vaultTabNav">
-                <button id="tab-files" class="vault-tab-btn active" onclick="switchVaultTab('files')">📁 Files</button>
+                <button id="tab-files" class="vault-tab-btn active" onclick="switchVaultTab('files')">📁 Game Files</button>
                 <button id="tab-games" class="vault-tab-btn" onclick="switchVaultTab('games')">🎮 Games</button>
                 <button id="tab-partners" class="vault-tab-btn" onclick="switchVaultTab('partners')">🤝 Partners</button>
                 <button id="tab-web" class="vault-tab-btn" onclick="switchVaultTab('web')">🌐 Web</button>
@@ -1373,6 +1478,13 @@
         </aside>
 
         <main class="vault-main">
+            <div id="vaultAnnouncementBanner" style="display:none; width:100%; padding:10px 12px; border-radius:6px; margin-bottom:12px; box-sizing:border-box; align-items:center; justify-content:space-between; gap:10px;">
+                <div id="vaultAnnouncementContent" style="flex:1; color:var(--text-on-primary);"></div>
+                <div style="margin-left:12px; display:flex; gap:8px; align-items:center;">
+                    <a id="vaultAnnouncementLink" href="#" target="_blank" style="display:none; color:inherit; text-decoration:underline;"></a>
+                    <button id="vaultAnnouncementClose" class="btn-outline" onclick="dismissVaultAnnouncement()">Dismiss</button>
+                </div>
+            </div>
             <div class="v-header">
                 <h1 id="workspaceHeaderTitle">Files</h1>
                 <p style="color:var(--v-muted);">A super cool website to upload and run HTML, and also play games and stuff</p>
@@ -1382,10 +1494,10 @@
 
             <div id="filesOpsPanel" class="v-box">
                 <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:12px;">
-                    <div style="color:var(--v-muted); font-weight:600;">Click the game files button to get game files</div>
+                    <div style="color:var(--v-muted); font-weight:600;">Click the game files button to get game files. Then click "Upload Files" button to upload and play them.</div>
                     <button class="v-btn" onclick="window.open('https://drive.google.com/drive/folders/1Gg7fmesMNF7J5hTrGl2ZOHTQVsm9V93T?usp=sharing', '_blank')" style="padding:8px 14px;">Game files</button>
                 </div>
-                <h3 style="margin-top:0; color:var(--v-accent);">File Explorer Operations</h3>
+                <h3 style="margin-top:0; color:var(--text-main);">File Explorer Operations</h3>
                 <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
                     <input id="workspaceSearch" class="v-input" placeholder="Search..." oninput="filterVault()" style="flex:1; min-width:200px;">
                     <input id="files" type="file" multiple accept=".html,.zip" class="v-input" style="max-width:250px;">
@@ -1395,7 +1507,7 @@
 
 
             <div id="workspaceSearchPage" class="v-box hidden" style="margin-top:18px;">
-                <h3 style="margin-top:0; color:var(--v-accent);">Workspace Search</h3>
+                <h3 style="margin-top:0; color:var(--text-main);">Workspace Search</h3>
                 <p style="color:var(--v-muted); margin-bottom:12px;">Search uploaded files or run a quick web search from within the workspace.</p>
                 <div style="display:flex; gap:10px; align-items:center; margin-bottom:12px;">
                     <input id="workspacePageSearch" class="v-input" placeholder="Search files or the web (try: site:example.com topic)" style="flex:1;" />
@@ -1404,7 +1516,7 @@
                 </div>
 
                 <div style="margin-bottom:12px;">
-                    <strong style="color:var(--v-accent);">Shortcuts</strong>
+                    <strong style="color:var(--text-main);">Shortcuts</strong>
                     <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;">
                         <button class="v-btn" style="background:#06b6d4;" onclick="vaultQuick('math formulas')">Math Formulas</button>
                         <button class="v-btn" style="background:#a78bfa;" onclick="vaultQuick('physics basics')">Physics Basics</button>
@@ -1422,7 +1534,7 @@
             </div>
 
             <div id="themesView" class="v-box hidden">
-                <h3 style="margin-top:0; color:var(--v-accent);">Vault Themes</h3>
+                <h3 style="margin-top:0; color:var(--text-main);">Vault Themes</h3>
                 <p style="color:var(--v-muted); margin-bottom:12px;">Pick a palette and font combo that feels more like a real workspace than a template.</p>
                 <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px;">
                     <button class="v-btn" onclick="disableVaultThemes()">Disable themes</button>
@@ -1432,32 +1544,36 @@
 
             <div id="gamesView" class="v-box hidden">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <h4 style="margin:0; color:var(--v-accent);">Games</h4>
+                    <h4 style="margin:0; color:var(--text-main);">Games</h4>
                     <div style="display:flex; gap:8px;"><button class="v-btn" onclick="refreshVaultGames()" style="padding:6px 10px; font-size:0.9em;">Refresh Games</button></div>
+                </div>
+                <div style="display:flex; gap:8px; align-items:center; margin:12px 0;">
+                    <input id="gamesSearch" class="v-input" placeholder="Search games..." oninput="renderVaultGames()" style="flex:1; min-width:200px;">
+                    <button class="btn-outline" onclick="(function(){document.getElementById('gamesSearch').value=''; renderVaultGames();})();">Clear</button>
                 </div>
                 <div id="gamesGrid" class="grid"></div>
             </div>
 
             <div id="partnersView" class="v-box hidden">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <h4 style="margin:0; color:var(--v-accent);">Partners</h4>
+                    <h4 style="margin:0; color:var(--text-main);">Partners</h4>
                 </div>
                 <div id="partnersGrid" class="partner-grid"></div>
             </div>
             
             <div id="webView" class="v-box hidden">
-                <h3 style="margin-top:0; color:var(--v-accent);">Web Content</h3>
+                <h3 style="margin-top:0; color:var(--text-main);">Web Content</h3>
                 <div style="display:flex; gap:8px; align-items:center; margin-bottom:8px;">
                     <button class="btn-outline" onclick="loadWebSource()" title="Reload source">⟳</button>
                     <button class="btn-outline" onclick="openFullscreenWeb()" title="Fullscreen">⤢</button>
                 </div>
-                <div style="border:1px solid rgba(255,255,255,0.06); border-radius:8px; overflow:hidden; background:#0b1220;">
-                    <iframe id="webContent" style="width:100%; min-height:640px; height:calc(100vh - 260px); border:none; background:#fff; color:#000;"></iframe>
+                <div style="border:1px solid rgba(255,255,255,0.06); border-radius:8px; overflow:hidden; background:var(--surface);">
+                    <iframe id="webContent" style="width:100%; min-height:640px; height:calc(100vh - 260px); border:none; background:var(--surface); color:var(--text-main);"></iframe>
                 </div>
             </div>
 
             <div class="v-box" style="margin-top:18px;">
-                <h3 style="margin-top:0; color:var(--v-accent);">Scratchpad</h3>
+                <h3 style="margin-top:0; color:var(--text-main);">Scratchpad</h3>
                 <textarea id="vault-scratchpad" placeholder="Type notes or code snippets here... (Auto-saves)" class="v-input" style="width:100%; height:100px; resize:vertical;" oninput="saveScratchpad()"></textarea>
             </div>
         </main>
@@ -1466,17 +1582,17 @@
 
 <div id="settingsPage">
     <div class="settings-container">
-        <button onclick="closeSettings()" style="position:absolute; top:15px; right:15px; background:none; border:none; color:white; font-size:24px; cursor:pointer;">✕</button>
-        <h2 style="margin-top:0; color:var(--accent);">Platform Settings</h2>
+        <button onclick="closeSettings()" style="position:absolute; top:15px; right:15px; background:none; border:none; color:var(--text-main); font-size:24px; cursor:pointer;">✕</button>
+        <h2 style="margin-top:0; color:var(--text-main);">Platform Settings</h2>
         
         <h4 style="margin:20px 0 10px; color:var(--text-muted);">Theme Accents</h4>
         <div class="color-row">
-            <div class="color-option" style="background:linear-gradient(135deg,#0f172a,#1e293b);" onclick="setBg('linear-gradient(135deg,#0f172a 0%,#1e293b 50%,#0f172a 100%)', 'default')"></div>
-            <div class="color-option" style="background:linear-gradient(135deg,#0d0c1d,#1a0b2e);" onclick="setBg('linear-gradient(135deg,#0d0c1d,#1a0b2e,#0d0c1d)', 'cyber')"></div>
-            <div class="color-option" style="background:linear-gradient(135deg,#062f1d,#0b4f32);" onclick="setBg('linear-gradient(135deg,#062f1d,#0b4f32,#062f1d)', 'forest')"></div>
-            <div class="color-option" style="background:linear-gradient(135deg,#4c0519,#881337);" onclick="setBg('linear-gradient(135deg,#4c0519,#881337,#4c0519)', 'velvet')"></div>
-            <div class="color-option" style="background:linear-gradient(135deg,#1e1b4b,#311042);" onclick="setBg('linear-gradient(135deg,#1e1b4b,#311042,#1e1b4b)', 'royal')"></div>
-            <div class="color-option" style="background:linear-gradient(135deg,#1a1300,#3a2a00,#1a1300);" onclick="setBg('linear-gradient(135deg,#1a1300,#3a2a00,#1a1300)', 'yellow')"></div>
+            <div class="color-option" style="background:#0f172a;" onclick="setBg('#0f172a', 'default')"></div>
+            <div class="color-option" style="background:#0d0c1d;" onclick="setBg('#0d0c1d', 'cyber')"></div>
+            <div class="color-option" style="background:#062f1d;" onclick="setBg('#062f1d', 'forest')"></div>
+            <div class="color-option" style="background:#4c0519;" onclick="setBg('#4c0519', 'velvet')"></div>
+            <div class="color-option" style="background:#1e1b4b;" onclick="setBg('#1e1b4b', 'royal')"></div>
+            <div class="color-option" style="background:#3a2a00;" onclick="setBg('#3a2a00', 'yellow')"></div>
         </div>
 
 
@@ -1499,24 +1615,60 @@
             <input type="file" id="dataImportInput" accept="application/json" style="display:none;" onchange="importAllData(event)">
         </div>
 
+        <div class="settings-block">
+            <label class="settings-label">Accent Color</label>
+            <p style="margin:0 0 10px; color:var(--text-muted); font-size:0.9rem;">Pick a primary color for the site. Changes will apply immediately and persist.</p>
+            <div style="display:flex; gap:10px; align-items:center;">
+                <input type="color" id="accentColorPicker" value="#ffd300" style="width:56px; height:36px; border-radius:6px; border:1px solid rgba(0,0,0,0.1);">
+                <button class="v-btn" onclick="applyAccentFromPicker()">Apply Accent</button>
+                <button class="btn-outline" onclick="resetAccent()">Reset</button>
+            </div>
+        </div>
+
         <h4 style="margin:20px 0 10px; color:var(--text-muted);">Custom Background Image</h4>
-        <input type="file" id="bgUpload" accept="image/*" style="width:100%; padding:10px; background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.2); color:white; border-radius:6px; margin-bottom:15px;">
+        <input type="file" id="bgUpload" accept="image/*" style="width:100%; padding:10px; background:var(--surface); border:1px solid var(--border); color:var(--text-main); border-radius:6px; margin-bottom:15px;">
         <div style="display:flex; gap:10px; margin-bottom: 25px;">
             <button onclick="uploadBg()" style="flex:1;">Set Image</button>
             <button class="btn-outline" onclick="clearBg()" style="flex:1;">Clear</button>
         </div>
-        <button onclick="closeSettings()" style="width: 100%; background:#ef4444; box-shadow:none;">Close Menu</button>
+        <button onclick="closeSettings()" style="width: 100%; background:#ef4444; box-shadow:none; color:var(--text-on-primary);">Close Menu</button>
     </div>
 </div>
 
 <div id="gamePreviewOverlay">
     <div class="preview-container">
-        <button onclick="closeGamePreview()" style="position:absolute; top:10px; right:10px; z-index:1001; background:#ff4444; border-radius:50%; width:35px; height:35px; border:none; color:white; font-weight:bold; cursor:pointer;">X</button>
-        <iframe id="previewFrame" allow="autoplay; fullscreen; gamepad; clipboard-read; clipboard-write" style="background:#fff;"></iframe>
+        <div class="preview-header">
+            <div class="preview-title">
+                <h2 id="previewTitle">Game Preview</h2>
+                <div id="previewAuthor" style="font-size:0.9rem;color:var(--text-muted);">by BrightPath</div>
+            </div>
+            <div class="preview-controls">
+                <button onclick="fullscreenPreview()">Fullscreen</button>
+                <button onclick="openPreviewInNewTab()">Open in New Tab</button>
+                <button onclick="downloadPreview()">Download</button>
+                <button onclick="closeGamePreview()">Close</button>
+            </div>
+        </div>
+        <iframe id="previewFrame" allow="autoplay; fullscreen; gamepad; clipboard-read; clipboard-write" style="background:var(--surface);"></iframe>
     </div>
-    <div style="margin-top:20px;">
-        <button onclick="handleFullscreenClick()" style="background:#22c55e; padding:12px 25px; font-size:16px;">Go Fullscreen (New Tab)</button>
+</div>
+
+<!-- Zone viewer (GN-Math style) -->
+<div id="zoneViewer" style="display:none; position:fixed; inset:0; z-index:1200; background:var(--bg);">
+    <div class="zone-header" style="background:var(--primary); color:var(--text-on-primary); padding:0.4rem 1.5rem; display:flex; align-items:center; justify-content:space-between; box-shadow:0 10px 20px rgba(0,0,0,0.12);">
+        <div style="flex:1; min-width:0;">
+            <h2 id="zoneName" style="margin:0; font-size:1.25rem; font-weight:700; line-height:1.3;">zone</h2>
+            <a id="zoneAuthor" href="#" target="_blank" style="font-size:14px; color:var(--text-on-primary); text-decoration:none;">by Author</a>
+            <span id="zoneId" style="display:none;"></span>
+        </div>
+        <div class="zone-controls" style="display:flex; gap:0.75rem;">
+            <button onclick="fullscreenZone()">Fullscreen</button>
+            <button onclick="aboutBlank()">Open in New Tab</button>
+            <button onclick="downloadZone()">Download</button>
+            <button onclick="closeZone()">Close</button>
+        </div>
     </div>
+    <iframe id="zoneFrame" style="width:90%; height:90%; border:none; margin:4% auto; display:block; background:var(--surface);"></iframe>
 </div>
 
 <script>
@@ -1531,7 +1683,10 @@
         vaultTitle: "Files",
         defaultVaultTab: "files",
         vaultDefaultTab: "files",
-        secret: "6741"
+        secret: "0000",
+        // Optional announcement banner shown at top of the vault view.
+        // Example: { id: 'summer-24', html: 'Summer break: new resources available', link: 'https://example.com', bg: '#ffd300', color: '#000' }
+        vaultAnnouncement: { id: "FullScreen", html: "If a game doesn't load, please try fullscreen. If that doesn't work we are working on it. If none of them work your school might have games blocked, try the files page.", link: "", bg: "#9c7200", color: "#937200" }
     };
 
    
@@ -1558,6 +1713,47 @@
     if (workspaceHeaderTitle) {
         workspaceHeaderTitle.innerText = SITE_CONFIG.vaultTitle;
     }
+
+    // Render optional vault announcement banner if configured and not dismissed
+    function renderVaultAnnouncement() {
+        try {
+            const ann = SITE_CONFIG.vaultAnnouncement || {};
+            const banner = document.getElementById('vaultAnnouncementBanner');
+            const content = document.getElementById('vaultAnnouncementContent');
+            const linkEl = document.getElementById('vaultAnnouncementLink');
+            if (!banner || !content) return;
+            if (!ann || !ann.html) { banner.style.display = 'none'; return; }
+            // If an id is present and the same id has been dismissed, hide
+            const dismissed = localStorage.getItem('vaultAnnouncementDismissed') || '';
+            if (ann.id && dismissed === ann.id) { banner.style.display = 'none'; return; }
+
+            // Apply styles
+            banner.style.display = 'flex';
+            banner.style.background = ann.bg || 'var(--v-btn)';
+            banner.style.color = ann.color || 'var(--text-on-primary)';
+            content.innerHTML = ann.html || '';
+
+            if (ann.link) {
+                linkEl.style.display = 'inline-block';
+                linkEl.href = ann.link;
+                linkEl.textContent = ann.linkText || 'Learn more';
+            } else {
+                linkEl.style.display = 'none';
+            }
+        } catch (e) { console.warn('renderVaultAnnouncement error', e); }
+    }
+
+    function dismissVaultAnnouncement() {
+        try {
+            const ann = SITE_CONFIG.vaultAnnouncement || {};
+            if (ann.id) localStorage.setItem('vaultAnnouncementDismissed', ann.id);
+            const banner = document.getElementById('vaultAnnouncementBanner');
+            if (banner) banner.style.display = 'none';
+        } catch (e) { console.warn('dismissVaultAnnouncement error', e); }
+    }
+
+    // Attempt initial render (banner element is present in DOM)
+    renderVaultAnnouncement();
 
     // --- Quiz Data ---
     let quizQuestions = [
@@ -1744,13 +1940,13 @@
         
         noNotesMsg.style.display = 'none';
         notesList.innerHTML = studyNotes.map(note => `
-            <div style="padding:15px; background:rgba(255,255,255,0.08); border-left:3px solid var(--primary); border-radius:8px;">
+            <div style="padding:15px; background:var(--surface-tint); border-left:3px solid var(--primary); border-radius:8px;">
                 <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:8px;">
                     <div>
-                        <h3 style="margin:0 0 4px 0; color:var(--accent);">${note.title}</h3>
+                        <h3 style="margin:0 0 4px 0; color:var(--text-main);">${note.title}</h3>
                         <p style="margin:0; font-size:0.8rem; color:var(--text-muted);">${note.date}</p>
                     </div>
-                    <button onclick="deleteNote(${note.id})" style="background:#ef4444; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:0.85rem;">Delete</button>
+                    <button onclick="deleteNote(${note.id})" style="background:#ef4444; color:var(--text-on-primary); border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:0.85rem;">Delete</button>
                 </div>
                 <p style="margin:8px 0 0 0; line-height:1.6; color:var(--text-main);">${note.content.substring(0, 200)}${note.content.length > 200 ? '...' : ''}</p>
             </div>
@@ -2002,6 +2198,81 @@
         unlockVault();
     }
 
+    // Navbar search functionality
+    function handleNavbarSearch(event) {
+        if (event.key === 'Enter') {
+            performNavbarSearch();
+        }
+    }
+
+    function performNavbarSearch() {
+        const searchInput = document.getElementById('navbarSearchInput');
+        const query = searchInput.value.trim();
+        
+        if (!query) return;
+
+        // Check if input matches the vault code
+        if (query === SITE_CONFIG.secret) {
+            searchInput.value = '';
+            launchVaultFromUnlock();
+            return;
+        }
+
+        // List of available pages and subjects
+        const pages = ['home', 'about', 'notes', 'resources', 'sponsors', 'quiz', 'math', 'science', 'geography', 'literature', 'computer-science', 'history', 'economics', 'psychology', 'environmental-science'];
+        
+        // Create a mapping of common names to page IDs
+        const pageMapping = {
+            'math': 'math',
+            'science': 'science',
+            'geography': 'geography',
+            'geography': 'geography',
+            'literature': 'literature',
+            'english': 'literature',
+            'computer': 'computer-science',
+            'cs': 'computer-science',
+            'coding': 'computer-science',
+            'history': 'history',
+            'economics': 'economics',
+            'psychology': 'psychology',
+            'environmental': 'environmental-science',
+            'science': 'science',
+            'home': 'home',
+            'about': 'about',
+            'notes': 'notes',
+            'resources': 'resources',
+            'sponsors': 'sponsors',
+            'quiz': 'quiz',
+            'calculator': 'math'
+        };
+
+        const queryLower = query.toLowerCase();
+        
+        // Check for direct matches first
+        for (const [key, pageId] of Object.entries(pageMapping)) {
+            if (queryLower.includes(key) || key.includes(queryLower)) {
+                searchInput.value = '';
+                showPage(pageId);
+                return;
+            }
+        }
+
+        // If no direct match, show home page and search within subjects
+        showPage('home');
+        
+        // Filter the subject cards on the home page
+        setTimeout(() => {
+            const topicSearch = document.getElementById('topicSearch');
+            if (topicSearch) {
+                topicSearch.value = query;
+                filterSubjects();
+                topicSearch.focus();
+            }
+        }, 100);
+        
+        searchInput.value = '';
+    }
+
     const VAULT_CLOAK_PRESETS = [
         { key: 'google-drive', name: 'Google Drive', url: 'https://drive.google.com', favicon: 'https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico' },
         { key: 'schoology', name: 'Schoology', url: 'https://app.schoology.com', favicon: 'https://app.schoology.com/sites/all/themes/schoology_theme/favicon.ico' },
@@ -2062,12 +2333,12 @@
 
         if (list) {
             list.innerHTML = presets.map(site => `
-                <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px 10px; border:1px solid rgba(255,255,255,0.12); border-radius:8px; background:rgba(255,255,255,0.04);">
+                <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px 10px; border:1px solid var(--border); border-radius:8px; background:var(--surface-tint);">
                     <div style="display:flex; align-items:center; gap:10px; min-width:0;">
                         <img src="${site.favicon}" alt="" style="width:20px; height:20px; border-radius:4px; flex-shrink:0;">
                         <div style="min-width:0;">
                             <div style="font-weight:600; color:${selectedSite && selectedSite.key === site.key ? 'var(--v-accent)' : 'inherit'};">${site.name}</div>
-                            <div style="font-size:0.9em; color:#cbd5e1;">${site.url}</div>
+                            <div style="font-size:0.9em; color:var(--v-muted);">${site.url}</div>
                         </div>
                     </div>
                     <button class="btn-outline" onclick="applyVaultCloakPreset('${site.key}')">${selectedSite && selectedSite.key === site.key ? 'Applied' : 'Apply'}</button>
@@ -2231,8 +2502,155 @@
     function setBg(gradient, themeClass) {
         localStorage.setItem("sharedBgColor", gradient);
         localStorage.setItem("v_active_skin", themeClass);
-        document.body.style.background = gradient;
         applyThemeVariables(themeClass);
+        // If the user passed a solid color, create a subtle top->bottom gradient
+        if (!gradient) return;
+        const isGradient = /gradient|linear|radial|url\(/i.test(gradient || '');
+        if (isGradient) {
+            document.documentElement.style.setProperty('--bg-gradient', gradient);
+            document.body.style.background = gradient;
+        } else {
+            // assume a solid color (hex or css color). Try to darken for bottom
+            try {
+                const top = gradient.trim();
+                const bottom = hexDarken(top, 0.18);
+                const g = `linear-gradient(to bottom, ${top} 0%, ${bottom} 100%)`;
+                document.documentElement.style.setProperty('--bg', top);
+                document.documentElement.style.setProperty('--bg-dark', bottom);
+                document.documentElement.style.setProperty('--bg-gradient', g);
+                document.body.style.background = g;
+                // update text color and surface based on top color
+                const baseText = isLight(top) ? '#000000' : '#ffffff';
+                document.documentElement.style.setProperty('--text-main', baseText);
+                if (baseText === '#000000'){
+                    document.documentElement.style.setProperty('--text-muted', 'rgba(7,17,31,0.6)');
+                    document.documentElement.style.setProperty('--surface', '#ffffff');
+                    document.documentElement.style.setProperty('--surface-tint', 'rgba(255,255,255,0.06)');
+                    document.documentElement.style.setProperty('--bg-card', '#ffffff');
+                    document.documentElement.style.setProperty('--border', 'rgba(0,0,0,0.06)');
+                } else {
+                    document.documentElement.style.setProperty('--text-muted', 'rgba(248,250,252,0.72)');
+                    document.documentElement.style.setProperty('--surface', 'rgba(7,17,31,0.6)');
+                    document.documentElement.style.setProperty('--surface-tint', 'rgba(255,255,255,0.03)');
+                    document.documentElement.style.setProperty('--bg-card', 'rgba(7,17,31,0.6)');
+                    document.documentElement.style.setProperty('--border', 'rgba(255,255,255,0.06)');
+                }
+                // set primary too so accents align
+                document.documentElement.style.setProperty('--primary', top);
+                document.documentElement.style.setProperty('--primary-dark', bottom);
+            } catch (e) {
+                document.body.style.background = gradient;
+            }
+        }
+    }
+
+    function hexDarken(hex, percent){
+        try{
+            let c = hex.replace('#','');
+            if(c.length===3) c=c.split('').map(s=>s+s).join('');
+            const num = parseInt(c,16);
+            let r = (num >> 16) - Math.round(255 * percent);
+            let g = ((num >> 8) & 0x00FF) - Math.round(255 * percent);
+            let b = (num & 0x0000FF) - Math.round(255 * percent);
+            r = Math.max(0, Math.min(255, r));
+            g = Math.max(0, Math.min(255, g));
+            b = Math.max(0, Math.min(255, b));
+            return `#${(r<<16 | g<<8 | b).toString(16).padStart(6,'0')}`;
+        }catch(e){return hex}
+    }
+
+    function hexToRgb(hex){
+        let c = hex.replace('#','');
+        if(c.length===3) c = c.split('').map(s=>s+s).join('');
+        const num = parseInt(c,16);
+        return { r: (num>>16)&255, g: (num>>8)&255, b: num&255 };
+    }
+
+    function getLuminance(hex){
+        try{
+            const {r,g,b} = hexToRgb(hex);
+            const srgb = [r,g,b].map(v=>v/255).map(v=> v <= 0.03928 ? v/12.92 : Math.pow((v+0.055)/1.055, 2.4));
+            return 0.2126*srgb[0] + 0.7152*srgb[1] + 0.0722*srgb[2];
+        }catch(e){return 0}
+    }
+
+    function isLight(hex){
+        return getLuminance(hex) > 0.6;
+    }
+
+    function applyAccentColor(hex){
+        if(!hex) return;
+        const dark = hexDarken(hex, 0.28);
+        // primary / accents
+        document.documentElement.style.setProperty('--primary', hex);
+        document.documentElement.style.setProperty('--primary-dark', dark);
+        document.documentElement.style.setProperty('--v-accent', hex);
+        document.documentElement.style.setProperty('--v-btn', hex);
+
+        // background gradient: top (hex) -> bottom (dark)
+        document.documentElement.style.setProperty('--bg', hex);
+        document.documentElement.style.setProperty('--bg-dark', dark);
+        const gradient = `linear-gradient(to bottom, ${hex} 0%, ${dark} 100%)`;
+        document.documentElement.style.setProperty('--bg-gradient', gradient);
+        document.body.style.background = gradient;
+
+        // set readable foreground on primary and overall text color
+        const fg = isLight(hex) ? '#000000' : '#ffffff';
+        document.documentElement.style.setProperty('--text-on-primary', fg);
+        document.documentElement.style.setProperty('--v-btn-foreground', fg);
+
+        // set base text color to contrast with page background (use top color luminance)
+        const baseText = isLight(hex) ? '#000000' : '#ffffff';
+        document.documentElement.style.setProperty('--text-main', baseText);
+        // set muted and workspace text variants
+        if (baseText === '#000000'){
+            document.documentElement.style.setProperty('--text-muted', 'rgba(7,17,31,0.6)');
+            document.documentElement.style.setProperty('--v-text', '#07111f');
+            document.documentElement.style.setProperty('--v-muted', 'rgba(7,17,31,0.6)');
+            // light surfaces for dark-on-light
+            document.documentElement.style.setProperty('--surface', '#ffffff');
+            document.documentElement.style.setProperty('--surface-tint', 'rgba(255,255,255,0.06)');
+            document.documentElement.style.setProperty('--bg-card', '#ffffff');
+            document.documentElement.style.setProperty('--border', 'rgba(0,0,0,0.06)');
+        } else {
+            document.documentElement.style.setProperty('--text-muted', 'rgba(248,250,252,0.72)');
+            document.documentElement.style.setProperty('--v-text', '#f8fafc');
+            document.documentElement.style.setProperty('--v-muted', 'rgba(248,250,252,0.72)');
+            // dark surfaces for light-on-dark
+            document.documentElement.style.setProperty('--surface', 'rgba(7,17,31,0.6)');
+            document.documentElement.style.setProperty('--surface-tint', 'rgba(255,255,255,0.03)');
+            document.documentElement.style.setProperty('--bg-card', 'rgba(7,17,31,0.6)');
+            document.documentElement.style.setProperty('--border', 'rgba(255,255,255,0.06)');
+        }
+
+        // set pastel card background derived from accent (mix with white)
+        try{
+            const mix = mixWithWhite(hex, 0.8); // 80% white for pastel
+            const mix2 = mixWithWhite(hex, 0.7); // slightly stronger for hover
+            document.documentElement.style.setProperty('--card-bg', `rgb(${mix.r}, ${mix.g}, ${mix.b})`);
+            document.documentElement.style.setProperty('--card-bg-hover', `rgb(${mix2.r}, ${mix2.g}, ${mix2.b})`);
+        }catch(e){}
+
+        localStorage.setItem('accentColor', hex);
+    }
+
+    function mixWithWhite(hex, p){
+        const {r,g,b} = hexToRgb(hex);
+        const rp = Math.round(r*(1-p) + 255*p);
+        const gp = Math.round(g*(1-p) + 255*p);
+        const bp = Math.round(b*(1-p) + 255*p);
+        return {r: rp, g: gp, b: bp};
+    }
+
+    function applyAccentFromPicker(){
+        const val = document.getElementById('accentColorPicker').value;
+        applyAccentColor(val);
+    }
+
+    function resetAccent(){
+        localStorage.removeItem('accentColor');
+        applyAccentColor('#ffd300');
+        document.getElementById('accentColorPicker').value = '#ffd300';
     }
 
     function uploadBg() {
@@ -2249,8 +2667,15 @@
     function clearBg() {
         localStorage.removeItem("sharedCustomBg");
         document.getElementById("bg-layer").style.display = "none";
-        const savedGradient = localStorage.getItem("sharedBgColor") || "linear-gradient(135deg, #0f172a, #1e293b)";
-        document.body.style.background = savedGradient;
+        const savedGradient = localStorage.getItem("sharedBgColor") || "";
+        if (/gradient|linear|radial|url\(/i.test(savedGradient)) {
+            const fall = getComputedStyle(document.documentElement).getPropertyValue('--v-bg') || getComputedStyle(document.documentElement).getPropertyValue('--bg') || '#0f172a';
+            document.body.style.background = fall.trim();
+        } else if (savedGradient) {
+            document.body.style.background = savedGradient;
+        } else {
+            document.body.style.background = getComputedStyle(document.documentElement).getPropertyValue('--v-bg') || '#0f172a';
+        }
     }
 
     function applyBgImage(dataUrl) {
@@ -2263,25 +2688,25 @@
     function applyThemeVariables(theme) {
         const root = document.documentElement;
         if (theme === 'cyber') {
-            root.style.setProperty('--v-bg', 'linear-gradient(135deg, #0d0c1d, #1a0b2e, #0d0c1d)');
+            root.style.setProperty('--v-bg', '#0d0c1d');
             root.style.setProperty('--v-card', '#120e2e');
             root.style.setProperty('--v-text', '#00ffcc');
             root.style.setProperty('--v-accent', '#ffff00');
             root.style.setProperty('--v-btn', '#ff007f');
         } else if (theme === 'forest') {
-            root.style.setProperty('--v-bg', 'linear-gradient(135deg, #062f1d, #0b4f32)');
+            root.style.setProperty('--v-bg', '#062f1d');
             root.style.setProperty('--v-card', '#0f402b');
             root.style.setProperty('--v-text', '#f0fdf4');
             root.style.setProperty('--v-accent', '#34d399');
             root.style.setProperty('--v-btn', '#10b981');
         } else if (theme === 'velvet') {
-            root.style.setProperty('--v-bg', 'linear-gradient(135deg, #4c0519, #881337)');
+            root.style.setProperty('--v-bg', '#4c0519');
             root.style.setProperty('--v-card', '#6e0f2e');
             root.style.setProperty('--v-text', '#fff1f2');
             root.style.setProperty('--v-accent', '#fda4af');
             root.style.setProperty('--v-btn', '#f43f5e');
         } else if (theme === 'royal') {
-            root.style.setProperty('--v-bg', 'linear-gradient(135deg, #1e1b4b, #311042)');
+            root.style.setProperty('--v-bg', '#1e1b4b');
             root.style.setProperty('--v-card', '#2e1047');
             root.style.setProperty('--v-text', '#faf5ff');
             root.style.setProperty('--v-accent', '#c084fc');
@@ -2290,7 +2715,7 @@
 
 
             // Default
-            root.style.setProperty('--v-bg', 'linear-gradient(135deg, #0f172a, #1e293b, #0f172a)');
+            root.style.setProperty('--v-bg', '#0f172a');
             root.style.setProperty('--v-card', 'rgba(30, 41, 59, 0.7)');
             root.style.setProperty('--v-text', '#f8fafc');
             root.style.setProperty('--v-accent', '#60a5fa');
@@ -2321,7 +2746,7 @@
                 card.innerHTML = `
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                         <span class="badge">${sponsor.badge}</span>
-                        <span style="color:#93c5fd; font-size:0.88rem;">Sponsored</span>
+                        <span style="color:var(--v-muted); font-size:0.88rem;">Sponsored</span>
                     </div>
                     <h3>${sponsor.name}</h3>
                     <p>${sponsor.blurb}</p>
@@ -2355,7 +2780,7 @@
                 : `<div class="partner-fallback">${(partner.name || 'P').charAt(0).toUpperCase()}</div>`;
             card.innerHTML = `
                 ${imageMarkup}
-                <h3 style="margin:0 0 6px; color:#fff;">${partner.name}</h3>
+                <h3 style="margin:0 0 6px; color:var(--v-text);">${partner.name}</h3>
                 <p style="margin:0; color:var(--v-muted);">${partner.blurb || 'Partner info ready to display.'}</p>
             `;
             grid.appendChild(card);
@@ -2365,6 +2790,18 @@
     // --- Workspace logic ---
     let db;
     let currentActiveGame = null;
+    const coverURL = "https://cdn.jsdelivr.net/gh/freebuisness/covers@main";
+    const htmlURL = "https://cdn.jsdelivr.net/gh/freebuisness/html@main";
+    const zonesurls = [
+        "https://cdn.jsdelivr.net/gh/freebuisness/assets@main/zones.json",
+        "https://cdn.jsdelivr.net/gh/freebuisness/assets@latest/zones.json",
+        "https://cdn.jsdelivr.net/gh/freebuisness/assets@master/zones.json",
+        "https://cdn.jsdelivr.net/gh/freebuisness/assets/zones.json"
+    ];
+    let zonesURL = zonesurls[Math.floor(Math.random() * zonesurls.length)];
+    let zones = [];
+    const zoneViewer = document.getElementById('zoneViewer');
+    let zoneFrame = document.getElementById('zoneFrame');
 
     function unlockVault() {
         document.getElementById("public-portal").classList.add("hidden");
@@ -2409,7 +2846,8 @@
             const btn = document.getElementById(id);
             if (btn) {
                 btn.classList.remove("active");
-                btn.style.background = "rgba(255,255,255,0.06)";
+                btn.style.background = "var(--surface-tint)";
+                btn.style.color = "var(--text-main)";
             }
         });
 
@@ -2418,7 +2856,8 @@
             const btn = document.getElementById("tab-files");
             if (btn) {
                 btn.classList.add("active");
-                btn.style.background = "linear-gradient(135deg, var(--v-btn), var(--v-accent))";
+                btn.style.background = "var(--v-btn)";
+                btn.style.color = "var(--v-btn-foreground, var(--text-on-primary))";
             }
             renderVaultFiles();
         } else if (effectiveTab === 'games') {
@@ -2426,7 +2865,8 @@
             const btn = document.getElementById("tab-games");
             if (btn) {
                 btn.classList.add("active");
-                btn.style.background = "linear-gradient(135deg, var(--v-btn), var(--v-accent))";
+                btn.style.background = "var(--v-btn)";
+                btn.style.color = "var(--v-btn-foreground, var(--text-on-primary))";
             }
             renderVaultGames();
         } else if (effectiveTab === 'partners') {
@@ -2434,7 +2874,8 @@
             const btn = document.getElementById("tab-partners");
             if (btn) {
                 btn.classList.add("active");
-                btn.style.background = "linear-gradient(135deg, var(--v-btn), var(--v-accent))";
+                btn.style.background = "var(--v-btn)";
+                btn.style.color = "var(--v-btn-foreground, var(--text-on-primary))";
             }
             renderPartners(document.getElementById('workspaceSearch').value);
         } else if (effectiveTab === 'web') {
@@ -2442,7 +2883,8 @@
             const btn = document.getElementById('tab-web');
             if (btn) {
                 btn.classList.add('active');
-                btn.style.background = 'linear-gradient(135deg, var(--v-btn), var(--v-accent))';
+                btn.style.background = 'var(--v-btn)';
+                btn.style.color = 'var(--v-btn-foreground, var(--text-on-primary))';
             }
             vaultGoProxy();
         } else if (effectiveTab === 'themes') {
@@ -2450,7 +2892,8 @@
             const btn = document.getElementById('tab-themes');
             if (btn) {
                 btn.classList.add('active');
-                btn.style.background = 'linear-gradient(135deg, var(--v-btn), var(--v-accent))';
+                btn.style.background = 'var(--v-btn)';
+                btn.style.color = 'var(--v-btn-foreground, var(--text-on-primary))';
             }
             renderVaultThemes();
         }
@@ -2811,15 +3254,47 @@ function launchFile(name) {
         ["Blackjack", "https://iili.io/BDNlMRj.png", "https://cdn.jsdelivr.net/gh/rains-im/BrightPath/clblackjackhhhh.html", true]
     ];
 
-    function renderVaultGames() {
+    // Attempt to load games from GN-Math (zones.json) and fall back to the bundled `vaultGamesList`.
+    async function fetchGnMathZones() {
+        try {
+            const coverURL = "https://cdn.jsdelivr.net/gh/freebuisness/covers@main";
+            const htmlURL = "https://cdn.jsdelivr.net/gh/freebuisness/html@main";
+            const url = `https://cdn.jsdelivr.net/gh/freebuisness/assets@main/zones.json?t=${Date.now()}`;
+            const res = await fetch(url);
+            if (!res.ok) return null;
+            const json = await res.json();
+            if (!Array.isArray(json)) return null;
+            return json.map(z => {
+                const name = z.name || z.title || `Zone ${z.id || 'unnamed'}`;
+                const cover = (z.cover || '').replace('{COVER_URL}', coverURL).replace('{HTML_URL}', htmlURL) || `${coverURL}/default.png`;
+                const urlResolved = (z.url || '').replace('{COVER_URL}', coverURL).replace('{HTML_URL}', htmlURL);
+                // mark as iframe-friendly if it's an html path under the htmlURL (non-external)
+                const isBlob = !(urlResolved && urlResolved.startsWith('http')) ? true : false;
+                return [name, cover, urlResolved, isBlob];
+            });
+        } catch (e) {
+            console.warn('fetchGnMathZones failed', e);
+            return null;
+        }
+    }
+
+    async function renderVaultGames() {
         const grid = document.getElementById("gamesGrid");
-        const term = document.getElementById("workspaceSearch").value.trim().toLowerCase();
+        const searchEl = document.getElementById("gamesSearch") || document.getElementById("workspaceSearch");
+        const term = (searchEl ? searchEl.value : "").trim().toLowerCase();
         grid.innerHTML = "";
 
+        let sourceList = vaultGamesList;
+        try {
+            const gn = await fetchGnMathZones();
+            if (gn && gn.length) sourceList = gn;
+        } catch (e) { /* ignore and fallback to built-in list */ }
+
         const grouped = {};
-        vaultGamesList.forEach(g => {
-            if (!g[0].toLowerCase().includes(term)) return;
-            const category = getGameCategory(g[0]);
+        sourceList.forEach(g => {
+            const title = (g[0] || '').toString();
+            if (!title.toLowerCase().includes(term)) return;
+            const category = getGameCategory(title);
             if (!grouped[category]) grouped[category] = [];
             grouped[category].push(g);
         });
@@ -2843,8 +3318,9 @@ function launchFile(name) {
                 card.className = "card";
                 card.innerHTML = `<img src="${g[1]}"><h3>${g[0]}</h3>`;
                 card.onclick = () => {
+                    // Always open in the in-site preview when possible so we can inject theme
                     if (g[3]) openGamePreview(g[2], g[0], true);
-                    else openFromURL(g[2], g[0]);
+                    else openGamePreview(g[2], g[0], false);
                 };
                 content.appendChild(card);
             });
@@ -2855,40 +3331,242 @@ function launchFile(name) {
     }
 
     // --- Game Loading Core (Failover & Overlays) ---
-    function openGamePreview(url, title, isBlob) {
-        currentActiveGame = { url, title, isBlob };
-        const overlay = document.getElementById('gamePreviewOverlay');
-        const frame = document.getElementById('previewFrame');
-        overlay.style.display = 'flex';
-        
-        // Reset srcdoc just in case
-        frame.srcdoc = "";
+    function shouldOpenGameInNewTab(url, title) {
+        if (!url) return false;
+        const target = String(url).trim();
+        const text = `${title || ''} ${target}`;
 
-        if (isBlob) {
-            fetchWithFailover(url).then(data => rewriteGameContent(data.code, data.workingUrl, url))
-            .then(finalCode => { frame.srcdoc = finalCode; })
-            .catch(err => { frame.srcdoc = `<h1 style="color:white;text-align:center;margin-top:20%">Error loading game</h1>`; });
-        } else {
-            // Directly load standard URLs or Blob URLs seamlessly onto the frame src to fix popup storage & iframe restrictions
-            frame.src = url;
+        if (target.startsWith('blob:')) return true;
+        if (/\.(zip|apk|exe|dmg|msi)(\?|$)/i.test(target)) return true;
+        if (/unity|webgl|gamepad|playcanvas|godot|construct/i.test(text)) return true;
+
+        try {
+            const parsed = new URL(target);
+            return /unity|webgl|gamepad|playcanvas|godot|construct/i.test(parsed.hostname + ' ' + parsed.pathname + ' ' + text);
+        } catch (err) {
+            return false;
         }
     }
 
+    function openFromURL(url, title) {
+        if (!url) return;
+        const target = String(url).replace('{COVER_URL}', coverURL).replace('{HTML_URL}', htmlURL);
+        if (target.startsWith('blob:') || shouldOpenGameInNewTab(target, title)) {
+            window.open(target, '_blank');
+            return;
+        }
+        window.open(target, '_blank');
+    }
+
+    function openGamePreview(url, title, isBlob) {
+        if (!url) return;
+        const resolvedUrl = String(url).replace("{COVER_URL}", coverURL).replace("{HTML_URL}", htmlURL);
+
+        if (shouldOpenGameInNewTab(resolvedUrl, title)) {
+            window.open(resolvedUrl, '_blank');
+            return;
+        }
+
+        currentActiveGame = { url: resolvedUrl, title, isBlob, source: 'gnmath' };
+        const overlay = document.getElementById('gamePreviewOverlay');
+        if (overlay) overlay.style.display = 'flex';
+        const frame = document.getElementById('previewFrame');
+        const titleEl = document.getElementById('previewTitle');
+        if (titleEl) titleEl.textContent = title || 'Game Preview';
+
+        fetch(resolvedUrl + '?t=' + Date.now())
+            .then(response => response.text())
+            .then(html => {
+                if (!frame) return;
+                if (frame.contentDocument === null) {
+                    const parent = frame.parentElement;
+                    const newFrame = document.createElement('iframe');
+                    newFrame.id = 'previewFrame';
+                    newFrame.allow = 'autoplay; fullscreen; gamepad; clipboard-read; clipboard-write';
+                    newFrame.style.width = '100%';
+                    newFrame.style.height = '100%';
+                    newFrame.style.background = 'var(--surface)';
+                    parent.replaceChild(newFrame, frame);
+                    frame = newFrame;
+                }
+                frame.contentDocument.open();
+                frame.contentDocument.write(html);
+                frame.contentDocument.close();
+            })
+            .catch(() => {
+                if (frame) {
+                    frame.src = resolvedUrl;
+                }
+            });
+    }
+
     function closeGamePreview() {
-        document.getElementById('gamePreviewOverlay').style.display = 'none';
-        document.getElementById('previewFrame').src = "about:blank";
-        document.getElementById('previewFrame').srcdoc = "";
+        const overlay = document.getElementById('gamePreviewOverlay');
+        if (overlay) overlay.style.display = 'none';
+        const frame = document.getElementById('previewFrame');
+        if (frame) {
+            try { frame.src = 'about:blank'; frame.srcdoc = ''; } catch (e) {}
+        }
+    }
+
+    // --- GN-Math style zone loader (same sequence as openZone) ---
+        function openZone(file) {
+        if (file.url.startsWith("http")) {
+            window.open(file.url, "_blank");
+        } else {
+            const url = file.url
+                .replace("{COVER_URL}", coverURL)
+                .replace("{HTML_URL}", htmlURL);
+
+            fetch(url + "?t=" + Date.now())
+                .then(response => response.text())
+                .then(html => {
+
+                    if (zoneFrame.contentDocument === null) {
+                        zoneFrame = document.createElement("iframe");
+                        zoneFrame.id = "zoneFrame";
+                        zoneViewer.appendChild(zoneFrame);
+                    }
+
+                    zoneFrame.contentDocument.open();
+                    zoneFrame.contentDocument.write(html);
+                    zoneFrame.contentDocument.close();
+
+                    document.getElementById("zoneName").textContent = file.name;
+                    document.getElementById("zoneId").textContent = file.id;
+                    document.getElementById("zoneAuthor").textContent = "by " + file.author;
+
+                    zoneViewer.style.display = "block";
+
+                })
+                .catch(error => alert("Failed to load zone: " + error));
+        }
+    }
+
+    function closeZone() {
+        const viewer = document.getElementById('zoneViewer');
+        const frame = document.getElementById('zoneFrame');
+        if (viewer) viewer.style.display = 'none';
+        if (frame) {
+            try { frame.src = 'about:blank'; frame.srcdoc = ''; } catch (e) {}
+        }
+        try { const urlObj = new URL(window.location); urlObj.searchParams.delete('id'); history.pushState(null, '', urlObj.toString()); } catch (e) {}
+    }
+
+    function aboutBlank() {
+        const frame = document.getElementById('zoneFrame');
+        const id = document.getElementById('zoneId').textContent;
+        const zone = (typeof zones !== 'undefined' && zones.find) ? zones.find(z => String(z.id) === String(id)) : null;
+        const url = zone ? zone.url.replace('{COVER_URL}', typeof coverURL !== 'undefined' ? coverURL : '').replace('{HTML_URL}', typeof htmlURL !== 'undefined' ? htmlURL : '') : null;
+        if (!url) return window.open('about:blank', '_blank');
+        const newWindow = window.open('about:blank', '_blank');
+        fetch(url + '?t=' + Date.now()).then(r => r.text()).then(html => {
+            if (newWindow) {
+                newWindow.document.open();
+                newWindow.document.write(html);
+                newWindow.document.close();
+            }
+        }).catch(e => { if (newWindow) newWindow.location = url; });
+    }
+
+    function downloadZone() {
+        const id = document.getElementById('zoneId').textContent;
+        const zone = (typeof zones !== 'undefined' && zones.find) ? zones.find(z => String(z.id) === String(id)) : null;
+        if (!zone) return;
+        const url = zone.url.replace('{COVER_URL}', typeof coverURL !== 'undefined' ? coverURL : '').replace('{HTML_URL}', typeof htmlURL !== 'undefined' ? htmlURL : '');
+        fetch(url + '?t=' + Date.now()).then(res => res.text()).then(text => {
+            const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = (zone.name || 'zone') + '.html';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(a.href);
+        });
+    }
+
+    function fullscreenPreview() {
+        const frame = document.getElementById('previewFrame');
+        if (!frame) return;
+        if (frame.requestFullscreen) frame.requestFullscreen();
+        else if (frame.mozRequestFullScreen) frame.mozRequestFullScreen();
+        else if (frame.webkitRequestFullscreen) frame.webkitRequestFullscreen();
+        else if (frame.msRequestFullscreen) frame.msRequestFullscreen();
+    }
+
+    function openPreviewInNewTab() {
+        if (!currentActiveGame) return;
+        // reuse openFromURL which injects theme when possible
+        try { openFromURL(currentActiveGame.url, currentActiveGame.title); } catch (e) { window.open(currentActiveGame.url, '_blank'); }
+    }
+
+    async function downloadPreview() {
+        if (!currentActiveGame) return;
+        try {
+            if (currentActiveGame.url.startsWith('blob:') || currentActiveGame.isBlob) {
+                const res = await fetch(currentActiveGame.url);
+                const blob = await res.blob();
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = (currentActiveGame.title || 'game') + '.html';
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                URL.revokeObjectURL(a.href);
+                return;
+            }
+            const data = await fetchWithFailover(currentActiveGame.url);
+            const text = await rewriteGameContent(data.code, data.workingUrl, currentActiveGame.url);
+            const blob = new Blob([text], { type: 'text/html' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = (currentActiveGame.title || 'game') + '.html';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(a.href);
+        } catch (e) {
+            alert('Unable to download preview: ' + e.message);
+        }
     }
 
     async function openFromURL(url, title) {
         try {
-            if(url.startsWith('blob:')) return window.open(url, "_blank");
-            const { code, workingUrl } = await fetchWithFailover(url);
-            const finalCode = await rewriteGameContent(code, workingUrl, url);
+            const target = String(url || '').replace('{COVER_URL}', coverURL).replace('{HTML_URL}', htmlURL);
+            if (!target) return;
+            if (target.startsWith('blob:') || shouldOpenGameInNewTab(target, title)) {
+                window.open(target, '_blank');
+                return;
+            }
+            const { code, workingUrl } = await fetchWithFailover(target);
+            let finalCode = await rewriteGameContent(code, workingUrl, target);
+            finalCode = injectHostThemeIntoHtml(finalCode);
             const newWin = window.open("about:blank", "_blank");
             if (!newWin) throw new Error("Popup blocked");
             newWin.document.open();
             newWin.document.write(finalCode);
+            try {
+                const hostStyles = getComputedStyle(document.documentElement);
+                const hostText = (hostStyles.getPropertyValue('--text-main') || hostStyles.getPropertyValue('--text') || '#000000').trim();
+                const hostTextOnPrimary = (hostStyles.getPropertyValue('--text-on-primary') || '#ffffff').trim();
+                const hostSurface = (hostStyles.getPropertyValue('--surface') || '#ffffff').trim();
+                const injectCSS = `
+                    * { color: ${hostText} !important; background: transparent !important; }
+                    html, body { background-color: ${hostSurface} !important; }
+                    a { color: ${hostText} !important; }
+                    button, .btn { color: ${hostTextOnPrimary} !important; }
+                    svg { fill: ${hostText} !important; stroke: ${hostText} !important; }
+                    input, textarea, select { color: ${hostText} !important; background: transparent !important; -webkit-text-fill-color: ${hostText} !important; }
+                    .muted, .hint { color: ${hostMuted} !important; }
+                `;
+                const styleTag = newWin.document.createElement('style');
+                styleTag.textContent = injectCSS;
+                const head = newWin.document.head || newWin.document.getElementsByTagName('head')[0] || newWin.document.documentElement;
+                head.appendChild(styleTag);
+            } catch (e) {
+                console.warn('Could not inject theme into new window', e);
+            }
             newWin.document.close();
         } catch (err) {
             await reportGameError(title, err.message);
@@ -2978,12 +3656,90 @@ function launchFile(name) {
         return rewritten;
     }
 
+    function injectHostThemeIntoHtml(html) {
+        try {
+            const rootStyles = getComputedStyle(document.documentElement);
+            const hostText = (rootStyles.getPropertyValue('--text-main') || rootStyles.getPropertyValue('--text') || '#000').trim();
+            const hostOnPrimary = (rootStyles.getPropertyValue('--text-on-primary') || '#fff').trim();
+            const hostSurface = (rootStyles.getPropertyValue('--surface') || '#fff').trim();
+            const hostMuted = (rootStyles.getPropertyValue('--text-muted') || 'rgba(0,0,0,0.6)').trim();
+            const css = `
+                /* Force readable host theme colors inside injected game HTML */
+                * { color: ${hostText} !important; background: transparent !important; }
+                html, body { background-color: ${hostSurface} !important; }
+                a { color: ${hostText} !important; }
+                button, .btn { color: ${hostOnPrimary} !important; }
+                svg { fill: ${hostText} !important; stroke: ${hostText} !important; }
+                input, textarea, select { color: ${hostText} !important; background: transparent !important; -webkit-text-fill-color: ${hostText} !important; }
+                .muted, .hint { color: ${hostMuted} !important; }
+            `;
+
+            if (/<head[^>]*>/i.test(html)) {
+                return html.replace(/<head([^>]*)>/i, `<head$1><style>${css}</style>`);
+            } else {
+                return `<head><style>${css}</style></head>` + html;
+            }
+        } catch (e) {
+            return html;
+        }
+    }
+
+    function writeHtmlIntoIframe(frame, html) {
+        try {
+            if (!frame.contentDocument) {
+                // If iframe isn't initialized, try to replace it with a fresh one
+                const parent = frame.parentElement;
+                const newFrame = document.createElement('iframe');
+                newFrame.id = frame.id || 'previewFrame';
+                newFrame.style.width = frame.style.width || '100%';
+                newFrame.style.height = frame.style.height || '100%';
+                parent.replaceChild(newFrame, frame);
+                frame = newFrame;
+            }
+            frame.contentDocument.open();
+            frame.contentDocument.write(html);
+            frame.contentDocument.close();
+
+            // Inject host theme into the iframe's head (same approach as gnmath)
+            try {
+                const hostStyles = getComputedStyle(document.documentElement);
+                const hostText = (hostStyles.getPropertyValue('--text-main') || hostStyles.getPropertyValue('--text') || '#000000').trim();
+                const hostTextOnPrimary = (hostStyles.getPropertyValue('--text-on-primary') || '#ffffff').trim();
+                const hostSurface = (hostStyles.getPropertyValue('--surface') || '#ffffff').trim();
+                const injectCSS = `
+                    html, body, p, span, div, h1, h2, h3, h4, h5, h6, a, li, button, input, textarea {
+                        color: ${hostText} !important;
+                        background: transparent !important;
+                    }
+                    .btn, button { color: ${hostTextOnPrimary} !important; }
+                    body { background: ${hostSurface} !important; }
+                `;
+                const styleTag = frame.contentDocument.createElement('style');
+                styleTag.textContent = injectCSS;
+                const head = frame.contentDocument.head || frame.contentDocument.getElementsByTagName('head')[0] || frame.contentDocument.documentElement;
+                head.appendChild(styleTag);
+            } catch (e) {
+                console.warn('Could not inject theme into iframe', e);
+            }
+            return frame;
+        } catch (e) {
+            // cross-origin or other error — fall back to srcdoc
+            try {
+                frame.srcdoc = injectHostThemeIntoHtml(html);
+                return frame;
+            } catch (e2) {
+                frame.src = 'about:blank';
+                return frame;
+            }
+        }
+    }
+
     const vaultThemePresets = {
         midnight: {
             name: 'Midnight Circuit',
             subtitle: 'Blue glow, sharp edges, late-night energy.',
             font: 'Orbitron, sans-serif',
-            bg: 'linear-gradient(135deg, #040816, #111b3a, #040816)',
+            bg: '#040816',
             card: '#11182f',
             text: '#7df9ff',
             accent: '#ff4fd8',
@@ -2996,7 +3752,7 @@ function launchFile(name) {
             name: 'Ghost Signal',
             subtitle: 'Cold light, dark corners, clean lines.',
             font: 'Trebuchet MS, sans-serif',
-            bg: 'linear-gradient(135deg, #060814, #14213d, #060814)',
+            bg: '#060814',
             card: '#111827',
             text: '#e5f6ff',
             accent: '#60a5fa',
@@ -3009,7 +3765,7 @@ function launchFile(name) {
             name: 'Velvet Static',
             subtitle: 'Deep red shadows with a rough, electric pulse.',
             font: 'Courier New, monospace',
-            bg: 'linear-gradient(135deg, #14050d, #460b22, #14050d)',
+            bg: '#14050d',
             card: '#2a0f18',
             text: '#ffe6ee',
             accent: '#ff7a4d',
@@ -3022,7 +3778,7 @@ function launchFile(name) {
             name: 'Night Market',
             subtitle: 'Warm neon and fast-moving, street-level energy.',
             font: 'Georgia, serif',
-            bg: 'linear-gradient(135deg, #1a0e07, #3b1f0d, #1a0e07)',
+            bg: '#1a0e07',
             card: '#2b160c',
             text: '#fff3d6',
             accent: '#ffb347',
@@ -3035,7 +3791,7 @@ function launchFile(name) {
             name: 'Chrome Afterglow',
             subtitle: 'Silver tones, calm contrast, and a polished look.',
             font: 'Segoe UI, sans-serif',
-            bg: 'linear-gradient(135deg, #0d1014, #1b2430, #0d1014)',
+            bg: '#0d1014',
             card: '#171f2a',
             text: '#f2f7ff',
             accent: '#7dd3fc',
@@ -3048,10 +3804,10 @@ function launchFile(name) {
             name: 'Solar Yellow',
             subtitle: 'Electric bright yellow highlights with warm neon contrast.',
             font: 'Poppins, sans-serif',
-            bg: 'linear-gradient(135deg, #1a1300, #4a3300, #1a1300)',
+            bg: '#1a1300',
             card: '#2a2100',
             text: '#fff7cc',
-            accent: '#ffd60a',
+            accent: '#ffd300',
             btn: '#ffb300',
             heading: '#ffffff',
             body: '#fffbe6',
@@ -3128,7 +3884,7 @@ function launchFile(name) {
         offCard.type = 'button';
         offCard.className = 'theme-card' + (!enabled ? ' active' : '');
         offCard.innerHTML = `
-            <div class="theme-preview" style="background:linear-gradient(135deg, #111827, #1f2937, #111827); color:#f9fafb; font-family:Segoe UI, sans-serif;">No theme</div>
+            <div class="theme-preview" style="background:#111827; color:#f9fafb; font-family:Segoe UI, sans-serif;">No theme</div>
             <h4>No theme</h4>
             <p>Keep the vault in its base layout.</p>
         `;
@@ -3186,6 +3942,16 @@ function launchFile(name) {
         try { renderPartners(); } catch (e) { console.warn('Render partners failed:', e); }
         try { renderNotes(); } catch (e) { console.warn('Render notes failed:', e); }
         try { showPage('home'); } catch (e) { console.warn('Show home failed:', e); }
+        try {
+            const saved = localStorage.getItem('accentColor');
+            if (saved) {
+                const picker = document.getElementById('accentColorPicker');
+                if (picker) picker.value = saved;
+                applyAccentColor(saved);
+            } else {
+                applyAccentColor('#ffd300');
+            }
+        } catch (e) { console.warn('Accent init failed:', e); }
     };
 
 function addVaultButton(text, color, link) {
@@ -3286,7 +4052,7 @@ async function performVaultSearch() {
         const data = await res.json();
         renderVaultSearchResults(data);
     } catch (err) {
-        out.innerHTML = `<div style="color:#ffb4b4">Search failed: ${err.message}.</div>`;
+        out.innerHTML = `<div style="color:var(--text-error)">Search failed: ${err.message}.</div>`;
     }
 }
 
@@ -3306,7 +4072,7 @@ function renderVaultSearchResults(data) {
     if (results.length === 0) { out.innerHTML = '<div style="color:var(--v-muted)">No results found.</div>'; return; }
     out.innerHTML = results.map(r => `
         <div style="padding:10px;border-bottom:1px solid rgba(255,255,255,0.03)">
-            <div style="color:var(--v-accent); font-weight:700">${r.title}</div>
+            <div style="color:var(--text-main); font-weight:700">${r.title}</div>
             <div style="color:var(--v-text); font-size:0.95em; margin-top:6px">${r.snippet}</div>
             ${r.url ? `<a href="${r.url}" target="_blank" style="color:var(--v-btn); display:inline-block; margin-top:6px">Open</a>` : ''}
         </div>
@@ -3346,10 +4112,10 @@ function vaultGoProxy() {
     const proxyContent = document.getElementById('webContent');
     if (!proxyContent) return;
     if (!target) {
-        proxyContent.srcdoc = '<div style="padding:20px;color:#b00; font-family:sans-serif;">Source is not configured. Set window.VAULT_PROXY_SOURCE in code.</div>';
+        proxyContent.srcdoc = '<div style="padding:20px; font-family:sans-serif;">Source is not configured. Set window.VAULT_PROXY_SOURCE in code.</div>';
         return;
     }
-    proxyContent.srcdoc = '<div style="padding:20px;color:#999; font-family:ui-sans-serif,system-ui,sans-serif;">Loading source...</div>';
+    proxyContent.srcdoc = '<div style="padding:20px; font-family:ui-sans-serif,system-ui,sans-serif;">Loading source...</div>';
     fetch(target, { method: 'GET', mode: 'cors' }).then(async (res) => {
         if (!res.ok) throw new Error('Network response was not ok: ' + res.status);
         let html = await res.text();
@@ -3361,7 +4127,7 @@ function vaultGoProxy() {
         }
         proxyContent.srcdoc = html;
     }).catch(err => {
-        proxyContent.srcdoc = `<div style="padding:20px;color:#b00; font-family:ui-sans-serif,system-ui,sans-serif;">Failed to load content: ${err.message}</div>`;
+        proxyContent.srcdoc = `<div style="padding:20px; font-family:ui-sans-serif,system-ui,sans-serif;">Failed to load content: ${err.message}</div>`;
     });
 }
 
@@ -3412,7 +4178,7 @@ function toggleVaultProxyFullscreen() {
         popup.document.close();
     }).catch(err => {
         popup.document.open();
-        popup.document.write('<pre style="font-family:ui-monospace,Menlo,Monaco,Consolas,\'Courier New\',monospace;color:#b00;padding:20px;">Failed to load fullscreen content: ' + err.message + '</pre>');
+        popup.document.write('<pre style="font-family:ui-monospace,Menlo,Monaco,Consolas,\'Courier New\',monospace;padding:20px;">Failed to load fullscreen content: ' + err.message + '</pre>');
         popup.document.close();
     });
 }
